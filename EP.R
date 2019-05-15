@@ -11,12 +11,13 @@ for(i in 1:N) {
   cat(sprintf("T(%d) = %d\n",i, Ti))
 }
 
-# Testa a distribuição para vários N
+# Testa a distribuição de T para vários N
 testeSamples <- function(range_n, sampleSz, p) {
   for(n in range_n) {
+    cat(sprintf("Checking for n = %d ", n))
     distT = testeSample(n, sampleSz, p)
     plot(distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b",  col="red")
   }
 }
 
-testeSamples(8:10, 10, 0.3)
+testeSamples(8:9, 10, 0.3)

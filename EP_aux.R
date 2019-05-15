@@ -46,12 +46,11 @@ generateMatrix <- function(N, p) {
 }
 
 testeSample <- function(n, sampleSz, p) {
-  cat(sprintf("Checking for n = %d ", n))
   # array com a distribuicao
   distT = array(0,n+1)
   # para cada distribuicao faz 1000 testes
   for(i in 1:sampleSz) {
-    cat(sprintf("."));
+    #cat(sprintf("."));
     A = generateMatrix(n, p)
     for(v in 1:n) {
       T = findPath(v,v,A,0,n+1)
@@ -59,8 +58,14 @@ testeSample <- function(n, sampleSz, p) {
     }
   }
   distT = distT / (sampleSz * n)
-  print('')
-  cat(sprintf("n = %d\nDist: ", n))
-  print(distT)
+  cat(sprintf("\n"))
+  cat(sprintf("n = %d\n", n))
+  # prepara tabela para impressao
+  df <- data.frame(t(distT), row.names = 'Distr. T')
+  names <- sprintf("%d", 1:(n+1))
+  names[n+1] = "inf"
+  colnames(df) = names
+  #print(df)
+  print(format(df, digits = 3, nsmall = 4, justify = 'centre'))
   return(distT)
 }

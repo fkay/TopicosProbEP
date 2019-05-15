@@ -6,6 +6,7 @@ author: |
 date: "15 de maio de 2019"
 header-includes:
  - \usepackage{amsmath}
+ - \usepackage{bbm}
 output: pdf_document
 ---
 
@@ -13,8 +14,10 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r echo=FALSE}
+```{r load_lib, echo=FALSE}
 source("EP_aux.R")
+
+N = 20 # está com 20 para testes pois demora para executar, depois deve aumentar
 ```
 
 
@@ -26,10 +29,11 @@ O trabalho se refere a estudar as curvas de distribuição para $T(v)$ e $C(v,w)
 O modelo escolhido para o teste foi usando conexões não direcionadas e preguiçoso. O fato de ser preguiçoso implica que existem conexões para continuar no mesmo vértice. Além disso fica determinado que cada connexão só pode ser usada uma unica vez para cada caminho testado, assim evita-se que a distribuição **T** tenha apenas valores 1 e 2. Como as conexões são aleatórias podem existir vértices isolados e também como não pode ser utilizado a mesma conexão para voltar podem existir valores de **T** e **C** que podemos considerar $\inf$.
 
 # Metodologia
+## Estimação das distribuições
 Para o teste primeiro inicia-se uma matriz *A* representando com **TRUE** quando a ligação entre os vértices está presente e **FALSE** quando não há ligação. A linha *i* da matriz representa o vértice de saída e a coluna *j* representa o vértice de chegada. Como o modelo é preguiçoso pode existir **TRUE** na diagonal principal da matriz, e pelo fato das conexões não serem direcionadas a matriz é simétrica.
 
 Exemplo de matriz de conexões para 5 vértices com probabilidade de conexão 0.4:
-```{r echo=TRUE}
+```{r matrix_example, echo=TRUE}
 A = generateMatrix(5, 0.4)
 print(A)
 ```
@@ -37,29 +41,36 @@ print(A)
 Para cada mariz gerada é testado para cada vértice o menor caminho de volta, usando uma busca em profundidade dos caminhos possíveis da matriz e armazenado o vetor com a contagem de cada valor para **T** encontrado. O mesmo é feito para cada combinação de vértices possíveis para encontrar os valores de **C**. Os caminhos podem ter tamanhos até $n$ e iremos considerar o valor $n+1$ como sendo infinito.
 
 Exemplo de valores de $T(v)$ para cada vértice de **A**
-```{r echo=TRUE}
+```{r T_example, echo=TRUE}
 for(i in 1:5) {
   Ti = findPath(i,i,A,0,5+1)
   cat(sprintf("T(%d) = %d\n",i, Ti))
 }
 ```
 
+Será gerado para cada tamano de $n \in {6,7,8,9,10,11,12}$ uma amostra de $`r N`$ matrizes e feita uma contagem para cada valor de **T** encontrado. A distribuição é estimada tirando a média da contagem por $n * `r N`$. Assim:
+
+$$\hat{P}(T=k) = \frac{1}{n*`r N`} \sum_{i=1}^{n*`r N`} \mathbbm{1}_{(T=k)}$$
+
+Para a distribuição de *C* é usado processo similar mas como temos as combinações entre os pares serão estimados $n * n$  valores para cada matriz, assim:
+
+$$\hat{P}(C=k) = \frac{1}{n^2 *`r N`} \sum_{i=1}^{n^2 *`r N`} \mathbbm{1}_{(C=k)}$$
+
+##Teste de aderência
 
 
+#Simulação
+## Distribuições para T
 
-
-# Exemplos do MarkDown
-
-```{r cars}
-summary(cars)
+Valores estimados e gráficos da distribuição
+```{r gera_dist, echo = FALSE}
+# Testa a distribuição de T para vários tamanhos de grafo
+testeSamples <- function(range_n, sampleSz, p) {
+  for(n in range_n) {
+    distT = testeSample(n, sampleSz, p)
+    plot(distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b", col="red")
+  }
+}
+testeSamples(range_n = 8:10, sampleSz = N, p = 0.4)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
