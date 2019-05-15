@@ -1,0 +1,65 @@
+---
+title: "EP MAE0699 - Tópicos de probabilidades"
+author: |
+  | Fabricio Kassardjian    nusp:2234961
+  | Robert                  nusp:xxxxx
+date: "15 de maio de 2019"
+header-includes:
+ - \usepackage{amsmath}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+source("EP_aux.R")
+```
+
+
+# Introdução
+
+O trabalho se refere a estudar as curvas de distribuição para $T(v)$ e $C(v,w), onde **T** representa o caminho mais curto de retorno ao vértice *v* e **C** o caminho mais curto entre os vértices *v* e *w*. O modelo de Erdo-Rényi é utilizado para gerar os grafos aleátorios com *n* vértices e probabilidade *p* de ligação entre cada par de vértices.
+
+## Modelo 2
+O modelo escolhido para o teste foi usando conexões não direcionadas e preguiçoso. O fato de ser preguiçoso implica que existem conexões para continuar no mesmo vértice. Além disso fica determinado que cada connexão só pode ser usada uma unica vez para cada caminho testado, assim evita-se que a distribuição **T** tenha apenas valores 1 e 2. Como as conexões são aleatórias podem existir vértices isolados e também como não pode ser utilizado a mesma conexão para voltar podem existir valores de **T** e **C** que podemos considerar $\inf$.
+
+# Metodologia
+Para o teste primeiro inicia-se uma matriz *A* representando com **TRUE** quando a ligação entre os vértices está presente e **FALSE** quando não há ligação. A linha *i* da matriz representa o vértice de saída e a coluna *j* representa o vértice de chegada. Como o modelo é preguiçoso pode existir **TRUE** na diagonal principal da matriz, e pelo fato das conexões não serem direcionadas a matriz é simétrica.
+
+Exemplo de matriz de conexões para 5 vértices com probabilidade de conexão 0.4:
+```{r echo=TRUE}
+A = generateMatrix(5, 0.4)
+print(A)
+```
+
+Para cada mariz gerada é testado para cada vértice o menor caminho de volta, usando uma busca em profundidade dos caminhos possíveis da matriz e armazenado o vetor com a contagem de cada valor para **T** encontrado. O mesmo é feito para cada combinação de vértices possíveis para encontrar os valores de **C**. Os caminhos podem ter tamanhos até $n$ e iremos considerar o valor $n+1$ como sendo infinito.
+
+Exemplo de valores de $T(v)$ para cada vértice de **A**
+```{r echo=TRUE}
+for(i in 1:5) {
+  Ti = findPath(i,i,A,0,5+1)
+  cat(sprintf("T(%d) = %d\n",i, Ti))
+}
+```
+
+
+
+
+
+# Exemplos do MarkDown
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

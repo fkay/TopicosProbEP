@@ -2,7 +2,7 @@
 source("EP_aux.R")
 
 N = 10
-p = 0.8
+p = 0.2
 
 A = generateMatrix(N, p)
 print(A)
@@ -19,4 +19,4 @@ testeSamples <- function(range_n, sampleSz, p) {
   }
 }
 
-testeSamples(8:10, 10, 0.7)
+testeSamples(8:10, 10, 0.3)

@@ -41,7 +41,7 @@ findPath <- function(vEnd, vStart, paths, T, Tmax) {
 
 # gera matriz triangular, com tamanho NxN probabilidade de caminhos p
 generateMatrix <- function(N, p) {
-  A = matrix(runif(N*N) > p, N, N)
+  A = matrix(runif(N*N) < p, N, N)
   return(Matrix::forceSymmetric(A, uplo = "U"))
 }
 
