@@ -42,13 +42,13 @@ findPath <- function(vEnd, vStart, paths, T, Tmax) {
 # gera matriz triangular, com tamanho NxN probabilidade de caminhos p
 generateMatrix <- function(N, p) {
   A = matrix(runif(N*N) < p, N, N)
-  return(Matrix::forceSymmetric(A, uplo = "U"))
+  return(as.matrix(Matrix::forceSymmetric(A, uplo = "U")))
 }
 
-testeSample <- function(n, sampleSz, p) {
+testeSampleT <- function(n, sampleSz, p) {
   # array com a distribuicao
   distT = array(0,n+1)
-  # para cada distribuicao faz 1000 testes
+  # para cada distribuicao faz sampleSz testes
   for(i in 1:sampleSz) {
     #cat(sprintf("."));
     A = generateMatrix(n, p)
@@ -57,15 +57,81 @@ testeSample <- function(n, sampleSz, p) {
       distT[T] = distT[T] + 1
     }
   }
-  distT = distT / (sampleSz * n)
+  distTP = distT / (sampleSz * n)
   cat(sprintf("\n"))
   cat(sprintf("n = %d\n", n))
   # prepara tabela para impressao
-  df <- data.frame(t(distT), row.names = 'Distr. T')
+  df <- data.frame(t(distTP), row.names = 'Distr. T')
   names <- sprintf("%d", 1:(n+1))
   names[n+1] = "inf"
   colnames(df) = names
-  #print(df)
   print(format(df, digits = 3, nsmall = 4, justify = 'centre'))
-  return(distT)
+  return(list("distT" = distTP, "distTAcum" = distT))
+}
+
+# Testa a distribuição de T para vários tamanhos de grafo
+testeSamplesT <- function(range_n, sampleSz, p) {
+  for(n in range_n) {
+    d = testeSampleT(n, sampleSz, p)
+    plot(d$distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b", col="red")
+  }
+}
+
+testeSampleC <- function(n, sampleSz, p) {
+  # array com a distribuicao
+  distC = array(0,n+1)
+  # para cada distribuicao faz sampleSz testes
+  for(i in 1:sampleSz) {
+    #cat(sprintf("."));
+    A = generateMatrix(n, p)
+    for(v in 1:n) {
+      for(w in 1:n) {
+        C = findPath(w,v,A,0,n+1)
+        distC[C] = distC[C] + 1
+      }
+    }
+  }
+  distCP = distC / (sampleSz * n)
+  cat(sprintf("\n"))
+  cat(sprintf("n = %d\n", n))
+  # prepara tabela para impressao
+  df <- data.frame(t(distCP), row.names = 'Distr. C')
+  names <- sprintf("%d", 1:(n+1))
+  names[n+1] = "inf"
+  colnames(df) = names
+  print(format(df, digits = 3, nsmall = 4, justify = 'centre'))
+  return(list("distC" = distCP, "distCAcum" = distC))
+}
+
+testeSamplesC <- function(range_n, sampleSz, p) {
+  for(n in range_n) {
+    cat(sprintf("Checking for n = %d ", n))
+    d = testeSampleC(n, sampleSz, p)
+    plot(d$distC, main = sprintf("n = %d", n), xlab = "C", ylab = "P(C)", type = "b",  col="blue")
+  }
+}
+
+testeAmostras <- function(n, samples, p) {
+  vals = matrix(0, ncol = 0, nrow = n+1)
+  distAcum = array(0, n+1)
+  for(i in 1:length(samples)) {
+    if(i==1) {
+      sample = samples[i]
+    }
+    else {
+      sample = samples[i] - samples[i-1]
+    }
+    cat(sprintf("Checking for sample = %d", samples[i]))
+    d = testeSampleT(n, sample, p)
+    distAcum = distAcum + d$distTAcum
+    distT = (distAcum) / (samples[i] * n)
+    vals = cbind(vals, distT)
+  }
+  colnames(vals) = sprintf("%d", samples)
+  sSz = length(samples)
+  m = vals[,2:sSz] - vals[,1:(sSz-1)]
+  m = m^2
+  vals = colSums(m)
+  plot(names(vals), vals, main = sprintf("Convergencia dos erros para n = %d", n) , xlab = "Tamanho da Amostra", ylab = "Erro", type = "b",  col="green")
+  return(vals)
 }

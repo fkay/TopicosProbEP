@@ -16,8 +16,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r load_lib, echo=FALSE}
 source("EP_aux.R")
-
-N = 20 # está com 20 para testes pois demora para executar, depois deve aumentar
+library(igraph)
+N = 200 # mudando o tipo de matriz aumentou a eficiencia
 ```
 
 
@@ -34,16 +34,19 @@ Para o teste primeiro inicia-se uma matriz *A* representando com **TRUE** quando
 
 Exemplo de matriz de conexões para 5 vértices com probabilidade de conexão 0.4:
 ```{r matrix_example, echo=TRUE}
-A = generateMatrix(5, 0.4)
-print(A)
+n = 7
+A = generateMatrix(n, 0.4)
+print(1*A) #1* para deixar em formato numerico
+
+plot(graph_from_adjacency_matrix(A, mode = 'undirected', weighted = TRUE))
 ```
 
 Para cada mariz gerada é testado para cada vértice o menor caminho de volta, usando uma busca em profundidade dos caminhos possíveis da matriz e armazenado o vetor com a contagem de cada valor para **T** encontrado. O mesmo é feito para cada combinação de vértices possíveis para encontrar os valores de **C**. Os caminhos podem ter tamanhos até $n$ e iremos considerar o valor $n+1$ como sendo infinito.
 
 Exemplo de valores de $T(v)$ para cada vértice de **A**
 ```{r T_example, echo=TRUE}
-for(i in 1:5) {
-  Ti = findPath(i,i,A,0,5+1)
+for(i in 1:n) {
+  Ti = findPath(i,i,A,0,n+1)
   cat(sprintf("T(%d) = %d\n",i, Ti))
 }
 ```
@@ -56,21 +59,26 @@ Para a distribuição de *C* é usado processo similar mas como temos as combina
 
 $$\hat{P}(C=k) = \frac{1}{n^2 *`r N`} \sum_{i=1}^{n^2 *`r N`} \mathbbm{1}_{(C=k)}$$
 
+## Tamanho da amostra
+Para determinar o tamanho bom de amostra para a aproximação da estimação, fixamos $n = 8$ e geramos a distribuição e o gráfico para alguns tamanhos de amostra ($N \in {25, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800}$). Depois calculamos a soma das diferenças ao quadrado entre os valores de cada distribuição e colocamos em um gráfico. No gráfico pode ser verificado se houve convergência e com que tamanho de amostra podemos considerar a convergência.
+$$dif = \sum_{i = 1}^{n+1} \big(P(T=k) - P'(T=k)\big)^2$$
+onde $P(T=k)$ é a probabilidade para o tamando de amostra atual e $P'(T=k)$ a probabilidade da amostra anterior.
+
 ##Teste de aderência
 
 
 #Simulação
+## Tamanho da amostra
+Gráfico para vários tamanhos de amostra:
+```{r tam_amostra, echo = FALSE}
+testeAmostras(n = 8, c(25, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800), p = 0.4)
+```
+
+
 ## Distribuições para T
 
 Valores estimados e gráficos da distribuição
 ```{r gera_dist, echo = FALSE}
-# Testa a distribuição de T para vários tamanhos de grafo
-testeSamples <- function(range_n, sampleSz, p) {
-  for(n in range_n) {
-    distT = testeSample(n, sampleSz, p)
-    plot(distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b", col="red")
-  }
-}
-testeSamples(range_n = 8:10, sampleSz = N, p = 0.4)
+testeSamplesT(range_n = 8:9, sampleSz = N, p = 0.4)
 ```
 

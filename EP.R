@@ -2,7 +2,7 @@
 source("EP_aux.R")
 
 N = 10
-p = 0.2
+p = 0.4
 
 A = generateMatrix(N, p)
 print(A)
@@ -11,13 +11,13 @@ for(i in 1:N) {
   cat(sprintf("T(%d) = %d\n",i, Ti))
 }
 
-# Testa a distribuição de T para vários N
-testeSamples <- function(range_n, sampleSz, p) {
-  for(n in range_n) {
-    cat(sprintf("Checking for n = %d ", n))
-    distT = testeSample(n, sampleSz, p)
-    plot(distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b",  col="red")
-  }
-}
 
-testeSamples(8:9, 10, 0.3)
+testeSamplesT(8:10, 20, 0.4)
+
+testeSampesC(8:9, 20, 0.4)
+
+m = testeAmostras(n = 8, c(25, 50, 75, 100, 150, 200, 250, 
+                           300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800), p = 0.4)
+
+library(igraph)
+plot(graph_from_adjacency_matrix(A, mode = 'undirected', weighted = TRUE))
