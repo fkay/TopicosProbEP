@@ -2,7 +2,7 @@
 title: "EP MAE0699 - Tópicos de probabilidades"
 author: |
   | Fabricio Kassardjian    nusp:2234961
-  | Robert                  nusp:xxxxx
+  | Robert Mota dos Santos  nusp:9039927
 date: "15 de maio de 2019"
 header-includes:
  - \usepackage{amsmath}
@@ -14,16 +14,18 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load_lib, echo=FALSE}
+```{r load_lib, include=FALSE}
 source("EP_aux.R")
-library(igraph)
+library(igraph) 
 N = 200 # mudando o tipo de matriz aumentou a eficiencia
+ns = 8:9  # range de tamanho de matrizes para teste
+prob = 0.4 # probabilidade de ligacao (gerar um aleatorio entre 0.25 e 0.75)
 ```
 
 
 # Introdução
 
-O trabalho se refere a estudar as curvas de distribuição para $T(v)$ e $C(v,w), onde **T** representa o caminho mais curto de retorno ao vértice *v* e **C** o caminho mais curto entre os vértices *v* e *w*. O modelo de Erdo-Rényi é utilizado para gerar os grafos aleátorios com *n* vértices e probabilidade *p* de ligação entre cada par de vértices.
+O trabalho se refere a estudar as curvas de distribuição para $T(v)$ e $C(v,w)$, onde **T** representa o caminho mais curto de retorno ao vértice *v* e **C** o caminho mais curto entre os vértices *v* e *w*. O modelo de Erdo-Rényi é utilizado para gerar os grafos aleátorios com *n* vértices e probabilidade *p* de ligação entre cada par de vértices.
 
 ## Modelo 2
 O modelo escolhido para o teste foi usando conexões não direcionadas e preguiçoso. O fato de ser preguiçoso implica que existem conexões para continuar no mesmo vértice. Além disso fica determinado que cada connexão só pode ser usada uma unica vez para cada caminho testado, assim evita-se que a distribuição **T** tenha apenas valores 1 e 2. Como as conexões são aleatórias podem existir vértices isolados e também como não pode ser utilizado a mesma conexão para voltar podem existir valores de **T** e **C** que podemos considerar $\inf$.
@@ -51,7 +53,7 @@ for(i in 1:n) {
 }
 ```
 
-Será gerado para cada tamano de $n \in {6,7,8,9,10,11,12}$ uma amostra de $`r N`$ matrizes e feita uma contagem para cada valor de **T** encontrado. A distribuição é estimada tirando a média da contagem por $n * `r N`$. Assim:
+Será gerado para cada tamanho de $n \in {6,7,8,9,10,11,12}$ uma amostra de $`r N`$ matrizes e feita uma contagem para cada valor de **T** encontrado. A distribuição é estimada tirando a média da contagem por $n * `r N`$. Assim:
 
 $$\hat{P}(T=k) = \frac{1}{n*`r N`} \sum_{i=1}^{n*`r N`} \mathbbm{1}_{(T=k)}$$
 
@@ -60,8 +62,8 @@ Para a distribuição de *C* é usado processo similar mas como temos as combina
 $$\hat{P}(C=k) = \frac{1}{n^2 *`r N`} \sum_{i=1}^{n^2 *`r N`} \mathbbm{1}_{(C=k)}$$
 
 ## Tamanho da amostra
-Para determinar o tamanho bom de amostra para a aproximação da estimação, fixamos $n = 8$ e geramos a distribuição e o gráfico para alguns tamanhos de amostra ($N \in {25, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800}$). Depois calculamos a soma das diferenças ao quadrado entre os valores de cada distribuição e colocamos em um gráfico. No gráfico pode ser verificado se houve convergência e com que tamanho de amostra podemos considerar a convergência.
-$$dif = \sum_{i = 1}^{n+1} \big(P(T=k) - P'(T=k)\big)^2$$
+Para determinar um tamanho bom de amostra para a aproximação da estimação, fixamos $n = 8$ e geramos a distribuição e o gráfico para alguns tamanhos de amostra ($N \in {25, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800}$). Depois calculamos a soma das diferenças ao quadrado entre os valores de cada distribuição e colocamos em um gráfico. No gráfico pode ser verificado se houve convergência e com que tamanho de amostra podemos considerar a convergência.
+$$erro = \sum_{i = 1}^{n+1} \big(P(T=k) - P'(T=k)\big)^2$$
 onde $P(T=k)$ é a probabilidade para o tamando de amostra atual e $P'(T=k)$ a probabilidade da amostra anterior.
 
 ##Teste de aderência
@@ -69,16 +71,28 @@ onde $P(T=k)$ é a probabilidade para o tamando de amostra atual e $P'(T=k)$ a p
 
 #Simulação
 ## Tamanho da amostra
-Gráfico para vários tamanhos de amostra:
-```{r tam_amostra, echo = FALSE}
-testeAmostras(n = 8, c(25, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800), p = 0.4)
-```
+Gráfico para vários tamanhos de amostra com $p = `r prob`$:
 
+```{r tam_amostra, echo = FALSE}
+v = testeAmostras(n = 8, c(25, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800), p = prob, silent = TRUE)
+```
+Pelo gráfico podemos considerar uma amostra com tamanho `r N` razoável para as estimações de distribuição.
 
 ## Distribuições para T
 
-Valores estimados e gráficos da distribuição
-```{r gera_dist, echo = FALSE}
-testeSamplesT(range_n = 8:9, sampleSz = N, p = 0.4)
+Valores estimados e gráficos da distribuição, usando `r N` amostras, e $p = `r prob`$
+
+```{r gera_dist_T, echo = FALSE}
+testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE)
 ```
 
+## Teste de aderência para T
+
+## Distribuições para C
+Valores estimados e gráficos da distribuição. Como a quantidade de testes aumenta em $n$ vezes para a distribuiçao C, reduzimos a quantidade de matrizes geradas pela metade, e portanto usamos uma amostra de tamanho `r N/2` com $p = `r prob`$.
+
+```{r gera_dist_C, echo = FALSE}
+testeSamplesC(range = ns, sampleSz = N/2, p = prob, silent = TRUE)
+```
+
+## Teste de aderência para C

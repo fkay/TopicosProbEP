@@ -45,7 +45,7 @@ generateMatrix <- function(N, p) {
   return(as.matrix(Matrix::forceSymmetric(A, uplo = "U")))
 }
 
-testeSampleT <- function(n, sampleSz, p) {
+testeSampleT <- function(n, sampleSz, p, silent = FALSE) {
   # array com a distribuicao
   distT = array(0,n+1)
   # para cada distribuicao faz sampleSz testes
@@ -58,26 +58,28 @@ testeSampleT <- function(n, sampleSz, p) {
     }
   }
   distTP = distT / (sampleSz * n)
-  cat(sprintf("\n"))
-  cat(sprintf("n = %d\n", n))
   # prepara tabela para impressao
   df <- data.frame(t(distTP), row.names = 'Distr. T')
   names <- sprintf("%d", 1:(n+1))
   names[n+1] = "inf"
   colnames(df) = names
-  print(format(df, digits = 3, nsmall = 4, justify = 'centre'))
+  if(silent == FALSE) {
+    cat(sprintf("\n"))
+    cat(sprintf("n = %d\n", n))
+    print(format(df, digits = 3, nsmall = 4, justify = 'centre'))
+  }
   return(list("distT" = distTP, "distTAcum" = distT))
 }
 
 # Testa a distribuição de T para vários tamanhos de grafo
-testeSamplesT <- function(range_n, sampleSz, p) {
+testeSamplesT <- function(range_n, sampleSz, p, silent = FALSE) {
   for(n in range_n) {
-    d = testeSampleT(n, sampleSz, p)
+    d = testeSampleT(n, sampleSz, p, silent)
     plot(d$distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b", col="red")
   }
 }
 
-testeSampleC <- function(n, sampleSz, p) {
+testeSampleC <- function(n, sampleSz, p, silent = FALSE) {
   # array com a distribuicao
   distC = array(0,n+1)
   # para cada distribuicao faz sampleSz testes
@@ -91,27 +93,31 @@ testeSampleC <- function(n, sampleSz, p) {
       }
     }
   }
-  distCP = distC / (sampleSz * n)
-  cat(sprintf("\n"))
-  cat(sprintf("n = %d\n", n))
+  distCP = distC / (sampleSz * n^2)
   # prepara tabela para impressao
   df <- data.frame(t(distCP), row.names = 'Distr. C')
   names <- sprintf("%d", 1:(n+1))
   names[n+1] = "inf"
   colnames(df) = names
-  print(format(df, digits = 3, nsmall = 4, justify = 'centre'))
+  if(silent == FALSE) {
+    cat(sprintf("\n"))
+    cat(sprintf("n = %d\n", n))
+    print(format(df, digits = 3, nsmall = 4, justify = 'centre'))
+  }
   return(list("distC" = distCP, "distCAcum" = distC))
 }
 
-testeSamplesC <- function(range_n, sampleSz, p) {
+testeSamplesC <- function(range_n, sampleSz, p, silent = FALSE) {
   for(n in range_n) {
-    cat(sprintf("Checking for n = %d ", n))
-    d = testeSampleC(n, sampleSz, p)
+    if(silent == FALSE) {
+      cat(sprintf("Checking for n = %d ", n))
+    }
+    d = testeSampleC(n, sampleSz, p, silent)
     plot(d$distC, main = sprintf("n = %d", n), xlab = "C", ylab = "P(C)", type = "b",  col="blue")
   }
 }
 
-testeAmostras <- function(n, samples, p) {
+testeAmostras <- function(n, samples, p, silent = FALSE) {
   vals = matrix(0, ncol = 0, nrow = n+1)
   distAcum = array(0, n+1)
   for(i in 1:length(samples)) {
@@ -121,8 +127,10 @@ testeAmostras <- function(n, samples, p) {
     else {
       sample = samples[i] - samples[i-1]
     }
-    cat(sprintf("Checking for sample = %d", samples[i]))
-    d = testeSampleT(n, sample, p)
+    if(silent == FALSE) {
+      cat(sprintf("Checking for sample = %d", samples[i]))
+    }
+    d = testeSampleT(n, sample, p, silent)
     distAcum = distAcum + d$distTAcum
     distT = (distAcum) / (samples[i] * n)
     vals = cbind(vals, distT)
