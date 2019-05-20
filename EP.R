@@ -1,8 +1,12 @@
-#source("C:/Users/Fabricio/OneDrive/IME-BMAC/7o Sem - 01_2019/MAE0699 - Tópicos de probabilidade/EP/EP_aux.R")
-source("EP_aux.R")
+#source("C:/Users/Fabricio/OneDrive/IME-BMAC/7o Sem - 01_2019/MAE0699 - TOpicos de probabilidade/EP/EP_aux.R")
+source("C:/Users/Robert/Desktop/Topicos/TopicosProbEP/EP_aux.R")
+
+fit_dist(8,20,0.4,"pois")
+fit_dist(8,1000,0.4,"geom")
+fit_dist(8,200,0.4,"exp")
 
 N = 10
-p = 0.4
+p = 0.7
 
 A = generateMatrix(N, p)
 print(A)
@@ -12,9 +16,9 @@ for(i in 1:N) {
 }
 
 
-testeSamplesT(8:10, 20, 0.4)
+testeSamplesT(8, 1000, 0.4)
 
-testeSampesC(8:9, 20, 0.4)
+testeSamplesC(8:9, 100, 0.4)
 
 m = testeAmostras(n = 8, c(25, 50, 75, 100, 150, 200, 250, 
                            300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800), p = 0.4)

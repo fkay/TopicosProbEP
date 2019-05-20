@@ -58,6 +58,7 @@ testeSampleT <- function(n, sampleSz, p, silent = FALSE) {
     }
   }
   distTP = distT / (sampleSz * n)
+  
   # prepara tabela para impressao
   df <- data.frame(t(distTP), row.names = 'Distr. T')
   names <- sprintf("%d", 1:(n+1))
@@ -145,4 +146,29 @@ testeAmostras <- function(n, samples, p, silent = FALSE) {
   plot(names(vals), vals, main = sprintf("Convergencia dos erros para n = %d", n) , xlab = "Tamanho da Amostra", ylab = "Erro", type = "b",  col="green")
   grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   return(vals)
+}
+
+fit_dist <- function(n,rep,p,distribuicao){
+  entra = 1
+  # para cada distribuicao faz rep testes
+  for(i in 1:rep) {
+   
+    A = generateMatrix(n, p)
+    for(v in 1:n) {
+      T = findPath(v,v,A,0,n)
+      if(entra)
+      {
+        if(T != 1) 
+          c = T
+        entra=0
+      }
+      
+      if (T != 1 ) 
+        c = append(c,T)
+    }
+  }
+  library("fitdistrplus")
+  fw <- fitdist(c,distribuicao) #faz com a distribuicao poisson
+  summary(fw)
+  #plot(fw)
 }
