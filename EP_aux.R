@@ -76,6 +76,7 @@ testeSamplesT <- function(range_n, sampleSz, p, silent = FALSE) {
   for(n in range_n) {
     d = testeSampleT(n, sampleSz, p, silent)
     plot(d$distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b", col="red")
+    grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   }
 }
 
@@ -114,6 +115,7 @@ testeSamplesC <- function(range_n, sampleSz, p, silent = FALSE) {
     }
     d = testeSampleC(n, sampleSz, p, silent)
     plot(d$distC, main = sprintf("n = %d", n), xlab = "C", ylab = "P(C)", type = "b",  col="blue")
+    grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   }
 }
 
@@ -141,5 +143,6 @@ testeAmostras <- function(n, samples, p, silent = FALSE) {
   m = m^2
   vals = colSums(m)
   plot(names(vals), vals, main = sprintf("Convergencia dos erros para n = %d", n) , xlab = "Tamanho da Amostra", ylab = "Erro", type = "b",  col="green")
+  grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   return(vals)
 }
