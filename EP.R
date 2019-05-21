@@ -1,9 +1,10 @@
 #source("C:/Users/Fabricio/OneDrive/IME-BMAC/7o Sem - 01_2019/MAE0699 - TOpicos de probabilidade/EP/EP_aux.R")
 source("EP_aux.R")
 
-fit_dist(8,200,0.4,"pois")
-fit_dist(8,1000,0.4,"geom")
-fit_dist(8,200,0.4,"exp")
+
+fw = fit_dist(8,1000,0.4,"pois")
+fw = fit_dist(8,1000,0.4,"geom")
+fw = fit_dist(8,1000,0.4,"exp")
 
 N = 10
 p = 0.7
@@ -25,3 +26,8 @@ m = testeAmostras(n = 8, c(25, 50, 75, 100, 150, 200, 250,
 
 library(igraph)
 plot(graph_from_adjacency_matrix(A, mode = 'undirected', weighted = TRUE))
+
+p = 1.3
+z = c(1,2,3,4,5,6)
+plot(d$distT[3:8], col='blue', type = "b")
+lines(dexp(z, p), col = "red", type = "b")

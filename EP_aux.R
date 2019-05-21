@@ -77,6 +77,7 @@ testeSamplesT <- function(range_n, sampleSz, p, silent = FALSE) {
   for(n in range_n) {
     d = testeSampleT(n, sampleSz, p, silent)
     plot(d$distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b", col="red")
+    grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   }
 }
 
@@ -115,6 +116,7 @@ testeSamplesC <- function(range_n, sampleSz, p, silent = FALSE) {
     }
     d = testeSampleC(n, sampleSz, p, silent)
     plot(d$distC, main = sprintf("n = %d", n), xlab = "C", ylab = "P(C)", type = "b",  col="blue")
+    grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   }
 }
 
@@ -142,30 +144,40 @@ testeAmostras <- function(n, samples, p, silent = FALSE) {
   m = m^2
   vals = colSums(m)
   plot(names(vals), vals, main = sprintf("Convergencia dos erros para n = %d", n) , xlab = "Tamanho da Amostra", ylab = "Erro", type = "b",  col="green")
+  grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   return(vals)
 }
 
-fit_dist <- function(n,rep,p,distribuicao){
-  entra = 1
-  # para cada distribuicao faz rep testes
-  for(i in 1:rep) {
-   
-    A = generateMatrix(n, p)
-    for(v in 1:n) {
-      T = findPath(v,v,A,0,n+1)
-      if(entra)
-      {
-        if(T != 1) 
-          c = T
-        entra=0
-      }
-      
-      if (T != 1 ) 
-        c = append(c,T)
-    }
-  }
+
+fit_dist <- function(n,repeticao,p,distribuicao){
+  # entra = 1
+  # # para cada distribuicao faz rep testes
+  # for(i in 1:repeticao) {
+  #  
+  #   A = generateMatrix(n, p)
+  #   for(v in 1:n) {
+  #     T = findPath(v,v,A,0,n)
+  #     if(entra)
+  #     {
+  #       if(T != 1) 
+  #         c = T
+  #       entra=0
+  #     }
+  #     
+  #     if (T != 1 ) 
+  #       c = append(c,T)
+  #   }
+  # }
+  d = testeSampleT(n, sampleSz = repeticao, p)
+  c = rep(1,d$distTAcum[3])
+  for(i in 4:n) 
+    c = append(c, rep(i-2,d$distTAcum[i]))
+  
+  print(d$distTAcum[3:n]/(n*repeticao - d$distTAcum[1] - d$distTAcum[n+1]))
+    
   library("fitdistrplus")
   fw <- fitdist(c,distribuicao) #faz com a distribuicao
   summary(fw)
-  #plot(fw)
+  plot(fw)
+  return(fw)
 }
