@@ -152,7 +152,7 @@ fit_dist <- function(n,rep,p,distribuicao){
    
     A = generateMatrix(n, p)
     for(v in 1:n) {
-      T = findPath(v,v,A,0,n)
+      T = findPath(v,v,A,0,n+1)
       if(entra)
       {
         if(T != 1) 
@@ -165,7 +165,7 @@ fit_dist <- function(n,rep,p,distribuicao){
     }
   }
   library("fitdistrplus")
-  fw <- fitdist(c,distribuicao) #faz com a distribuicao poisson
+  fw <- fitdist(c,distribuicao) #faz com a distribuicao
   summary(fw)
   #plot(fw)
 }

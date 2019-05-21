@@ -1,7 +1,7 @@
 #source("C:/Users/Fabricio/OneDrive/IME-BMAC/7o Sem - 01_2019/MAE0699 - TOpicos de probabilidade/EP/EP_aux.R")
-source("C:/Users/Robert/Desktop/Topicos/TopicosProbEP/EP_aux.R")
+source("EP_aux.R")
 
-fit_dist(8,20,0.4,"pois")
+fit_dist(8,200,0.4,"pois")
 fit_dist(8,1000,0.4,"geom")
 fit_dist(8,200,0.4,"exp")
 
