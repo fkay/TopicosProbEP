@@ -175,8 +175,8 @@ fit_dist <- function(n,repeticao,p,distribuicao){
   print(d$distTAcum[3:n]/(n*repeticao - d$distTAcum[1] - d$distTAcum[n+1]))
     
   library("fitdistrplus")
-  fw <- fitdist(c,distribuicao) #faz com a distribuicao poisson
+  fw <- fitdist(c,distribuicao, method = "mle") #procura melhores parametros
   summary(fw)
-  plot(fw)
+  #plot(fw)
   return(fw)
 }
