@@ -89,9 +89,10 @@ testeSampleC <- function(n, sampleSz, p, silent = FALSE) {
     #cat(sprintf("."));
     A = generateMatrix(n, p)
     for(v in 1:n) {
-      for(w in 1:n) {
+      # testamos de v em diante pois como é sem direcao, C é igual de v->w w->v
+      for(w in v:n) {
         C = findPath(w,v,A,0,n+1)
-        distC[C] = distC[C] + 1
+        distC[C] = distC[C] + ifelse(w==v,1,2) # aqui somamos 2 caso v!=w
       }
     }
   }
@@ -147,6 +148,7 @@ testeAmostras <- function(n, samples, p, silent = FALSE) {
   grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   return(vals)
 }
+
 
 fit_dist <- function(n,repeticao,p,distribuicao){
   # entra = 1

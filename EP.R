@@ -1,6 +1,7 @@
 #source("C:/Users/Fabricio/OneDrive/IME-BMAC/7o Sem - 01_2019/MAE0699 - TOpicos de probabilidade/EP/EP_aux.R")
 source("EP_aux.R")
 
+
 fw = fit_dist(8,1000,0.4,"pois")
 fw = fit_dist(8,1000,0.4,"geom")
 fw = fit_dist(8,1000,0.4,"exp")
