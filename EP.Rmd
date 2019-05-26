@@ -87,15 +87,35 @@ testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE)
 ```
 
 ## Proposta de distribuição proposta para T
-Ao realizarmos os testes, percebemos que a nossa aparenta ter formas de algumas distribuições conhecidas, sendo eals: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar quais paramêtros de cada uma destas distribuições.
+Ao realizarmos os testes, percebemos que a nossa aparenta ter formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar quais paramêtros de cada uma destas distribuições.
 Com isso queremos encontrar a distribuição que possui a menor distância com nossa distribuição simulada, isto é:
 
-$$\sum_{i=1}^{N}\frac{(O_{i} - E_{i})^2}{E_{i}}$$
-Onde $O_{i}$ são as probabilidades observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Poisson,Exponencial,Geometrica) $. N representa o número de vértices.
+$$ \sum_{i=1}^{N}|T_{i} - P(X_{d} = i)|, d_{1}:=Poisson;d_{2}:=Exponencial;d_{3}:= Geométrica$$
+#Parâmetros da distribuição:
+Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amosra cresce, em outras palavras:
+$$ \lim_{n->\infty}\hat{\mu_{n}} \rightarrow \mu $$
+Usaremos essa premissa para encontrar os parâmetros da nossa distribuição.
+Sendo assim devemos conhecer as esperanças das distribuições: Exponencial, Geométrica e de Possion:
+
+$$E(X\sim Geo(p)) = \frac{1}{p} \\ E(X\sim Exp(\lambda)) = \frac{1}{\lambda} \\ E(X\sim Pois(\lambda)) = \frac{1}{\lambda}$$
+
+
+
+
+Em seguida iremos realizar o teste de $\chi^2$ para avaliarmos se estamos cometendo o erro da escolha da nossa distruibuição 
 
 #Observações:
-Nosso processo de simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T simulada. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2 levando assim: $O_{2} = 0 $, retiramos também a oberservação 1 por dois motivos. 1º Ela distorce a distribuição que gostaríamos que fosse, 2º de fato $O_{1} = p$, como o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $O_{1} = p$
+Nosso processo de simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T simulada. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2 levando assim: $O_{2} = 0 $, retiramos também a oberservação 1 por dois motivos. 1º Ela distorce a distribuição que gostaríamos que fosse, 2º de fato $P(O_{1}) = p$, como o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$
 e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada. 
+
+##Teste de aderência:
+Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=)
+
+
+$$\chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}}$$
+Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Poisson,Exponencial,Geometrica) $. K representa o número de repetições.
+
+
 
 ## Teste de aderência para T
 

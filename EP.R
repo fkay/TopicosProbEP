@@ -2,9 +2,9 @@
 source("EP_aux.R")
 
 
-fw = fit_dist(8,1000,0.4,"pois")
-fw = fit_dist(8,1000,0.4,"geom")
-fw = fit_dist(8,1000,0.4,"exp")
+fw = fit_dist(10,1000,0.4,"pois")
+fw = fit_dist(10,1000,0.4,"geom")
+fw = fit_dist(10,1000,0.4,"exp")
 
 N = 10
 p = 0.7
@@ -27,9 +27,33 @@ m = testeAmostras(n = 8, c(25, 50, 75, 100, 150, 200, 250,
 library(igraph)
 plot(graph_from_adjacency_matrix(A, mode = 'undirected', weighted = TRUE))
 
-p = 1.40
-z = c(1,2,3,4,5,6,7,8)
-d = testeSampleT(10, 1000, 0.4)
-plot(d$distT[3:10], col='blue', type = "b")
-origin = dexp(z, p)
-lines(origin, col = "red", type = "b")
+#p = 1.40
+#z = c(1,2,3,4,5,6,7,8)
+#d = testeSampleT(10, 1000, 0.4)
+#plot(d$distT[3:10], col='blue', type = "b")
+#origin = dexp(z, p)
+#lines(origin, col = "red", type = "b")
+
+
+#1/p = 0.834376863446631
+
+n = 10
+N = 1000
+p = 0.4
+d = testeSampleT(n, N, p)
+distT = d$distTAcum
+dT = distT[3:n]
+dTp = dT / sum(dT)
+dTP = dT / sum(distT)
+c = rep(1,dT[1])
+for(i in 2:n) 
+  c = append(c, rep(i,dT[i]))
+lambd = mean(c)
+geo = 1/lambd
+plot(c(NA,dTp), x = 0:(n-2), col="blue", type = "b")
+lines(dTP, col = "darkgray", type = "b")
+curve(dexp(x, 0.8273056), xlim=c(0,n-2), col = "orange", type = "b", add = T)
+lines(dgeom(0:(n-2),geo), x = 1:(n-1), col = "green", type = "b")
+grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+
+
