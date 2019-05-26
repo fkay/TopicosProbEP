@@ -86,7 +86,19 @@ Valores estimados e gráficos da distribuição, usando `r N` amostras, e $p = `
 testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE)
 ```
 
+## Proposta de distribuição proposta para T
+Ao realizarmos os testes, percebemos que a nossa aparenta ter formas de algumas distribuições conhecidas, sendo eals: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar quais paramêtros de cada uma destas distribuições.
+Com isso queremos encontrar a distribuição que possui a menor distância com nossa distribuição simulada, isto é:
+
+$$\sum_{i=1}^{N}\frac{(O_{i} - E_{i})^2}{E_{i}}$$
+Onde $O_{i}$ são as probabilidades observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Poisson,Exponencial,Geometrica) $. N representa o número de vértices.
+
+#Observações:
+Nosso processo de simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T simulada. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2 levando assim: $O_{2} = 0 $, retiramos também a oberservação 1 por dois motivos. 1º Ela distorce a distribuição que gostaríamos que fosse, 2º de fato $O_{1} = p$, como o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $O_{1} = p$
+e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada. 
+
 ## Teste de aderência para T
+
 
 ## Distribuições para C
 Valores estimados e gráficos da distribuição. Como a quantidade de testes aumenta em $n$ vezes para a distribuiçao C, reduzimos a quantidade de matrizes geradas pela metade, e portanto usamos uma amostra de tamanho `r N/2` com $p = `r prob`$.

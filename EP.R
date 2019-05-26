@@ -27,7 +27,9 @@ m = testeAmostras(n = 8, c(25, 50, 75, 100, 150, 200, 250,
 library(igraph)
 plot(graph_from_adjacency_matrix(A, mode = 'undirected', weighted = TRUE))
 
-p = 1.3
-z = c(1,2,3,4,5,6)
-plot(d$distT[3:8], col='blue', type = "b")
-lines(dexp(z, p), col = "red", type = "b")
+p = 1.40
+z = c(1,2,3,4,5,6,7,8)
+d = testeSampleT(10, 1000, 0.4)
+plot(d$distT[3:10], col='blue', type = "b")
+origin = dexp(z, p)
+lines(origin, col = "red", type = "b")
