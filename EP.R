@@ -52,7 +52,8 @@ lambd = mean(c)
 geo = 1/lambd
 plot(c(NA,dTp), x = 0:(n-2), col="blue", type = "b")
 lines(dTP, col = "darkgray", type = "b")
-curve(dexp(x, 0.8273056), xlim=c(0,n-2), col = "orange", type = "b", add = T)
+curve(dexp(x, 0.834601), xlim=c(0,n-2), col = "orange", type = "b", add = T)
+curve(dpois(x, 1.209475), xlim=c(0,n-2), col = "black", type = "s", add = T)
 lines(dgeom(0:(n-2),geo), x = 1:(n-1), col = "green", type = "b")
 grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
 

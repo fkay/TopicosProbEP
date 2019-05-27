@@ -87,19 +87,31 @@ testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE)
 ```
 
 ## Proposta de distribuição proposta para T
-Ao realizarmos os testes, percebemos que a nossa aparenta ter formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar quais paramêtros de cada uma destas distribuições.
-Com isso queremos encontrar a distribuição que possui a menor distância com nossa distribuição simulada, isto é:
+Ao realizarmos os testes, percebemos que nossa distribuição aparenta ter caracteristicas e formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar qual distribuição é mais similar a nossa distribuição e qual o melhor paramêtros da distribuição escolhida.
 
-$$ \sum_{i=1}^{N}|T_{i} - P(X_{d} = i)|, d_{1}:=Poisson;d_{2}:=Exponencial;d_{3}:= Geométrica$$
+Para encontrar a melhor distribuição da nossa distribuição usamos o pacote **fitdistrplus** que dado o conjunto de observações e a função de densidade de probabilidade ele retorna qual o desvio padrão das observações contra os valores esperados da distribuição.
+
+Sendo assim, realizamos a simulação e obtemos os seguintes valores:
+
+              | Poisson | Exponencial | Geométrica
+------------------------|-------------| -------------
+Desvio Padrão | Cell 2  |             |
+
+* Vale ressaltar que a simulação foi realizada com os seguintes parâmetros:
+
+- Número de vértices: 10
+- Número de simulações: 1000
+- Probabilidade de ligar o vértice: 0.4
+
+Com isso, escolhemos a distribuição geométrica como hipótese de distribuição para nossa simulação.Em seguida vamos encontrar o melhor parâmetro p, considerando que $X\sim Geo(p)$.
+
 #Parâmetros da distribuição:
 Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amosra cresce, em outras palavras:
 $$ \lim_{n->\infty}\hat{\mu_{n}} \rightarrow \mu $$
-Usaremos essa premissa para encontrar os parâmetros da nossa distribuição.
-Sendo assim devemos conhecer as esperanças das distribuições: Exponencial, Geométrica e de Possion:
+Usaremos essa premissa para encontrar os parâmetros da nossa distribuição geométrica.
+Sendo assim devemos conhecer a esperança da distribuição geométrica:
 
-$$E(X\sim Geo(p)) = \frac{1}{p} \\ E(X\sim Exp(\lambda)) = \frac{1}{\lambda} \\ E(X\sim Pois(\lambda)) = \frac{1}{\lambda}$$
-
-
+$$E(X\sim Geo(p)) = \frac{1}{p}$$ 
 
 
 Em seguida iremos realizar o teste de $\chi^2$ para avaliarmos se estamos cometendo o erro da escolha da nossa distruibuição 
