@@ -94,7 +94,8 @@ Nossa simulação é um processo discreto, além disso realizamos algumas mudan�
 e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada.
 
 A distribuição sem os dados citados tem uma distribuição reescalada na forma:
-#colocar imagem
+
+ ![](Distribuicao_reescaled.png)
 
 #Parâmetros da distribuição:
 Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amosra cresce, em outras palavras:
