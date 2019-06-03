@@ -97,7 +97,7 @@ A distribuição sem os dados citados tem uma distribuição reescalada na forma
 
  ![](Distribuicao_reescaled.png)
 
-#Parâmetros da distribuição:
+# Parâmetros da distribuição:
 Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amosra cresce, em outras palavras:
 $$ \lim_{n->\infty}\hat{\mu_{n}} \rightarrow \mu $$
 Usaremos essa premissa para encontrar os parâmetros da nossa distribuição .
