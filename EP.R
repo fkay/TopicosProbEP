@@ -40,6 +40,7 @@ plot(graph_from_adjacency_matrix(A, mode = 'undirected', weighted = TRUE))
 n = 10
 N = 1000
 p = 0.4
+
 d = testeSampleT(n, N, p)
 distT = d$distTAcum
 dT = distT[3:n]

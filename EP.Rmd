@@ -87,50 +87,59 @@ testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE)
 ```
 
 ## Proposta de distribuição proposta para T
-Ao realizarmos os testes, percebemos que nossa distribuição aparenta ter caracteristicas e formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar qual distribuição é mais similar a nossa distribuição e qual o melhor paramêtros da distribuição escolhida.
+Ao realizarmos os testes, percebemos que nossa distribuição aparenta ter caracteristicas e formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar qual distribuição é mais 'próxima' da nossa distribuição e quais são os melhores paramêtros da distribuição escolhida.
 
-Para encontrar a melhor distribuição da nossa distribuição usamos o pacote **fitdistrplus** que dado o conjunto de observações e a função de densidade de probabilidade ele retorna qual o desvio padrão das observações contra os valores esperados da distribuição.
+#Premissas iniciais:
+Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, como o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$
+e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada.
 
-Sendo assim, realizamos a simulação e obtemos os seguintes valores:
-
-              | Poisson | Exponencial | Geométrica
-------------------------|-------------| -------------
-Desvio Padrão | Cell 2  |             |
-
-* Vale ressaltar que a simulação foi realizada com os seguintes parâmetros:
-
-- Número de vértices: 10
-- Número de simulações: 1000
-- Probabilidade de ligar o vértice: 0.4
-
-Com isso, escolhemos a distribuição geométrica como hipótese de distribuição para nossa simulação.Em seguida vamos encontrar o melhor parâmetro p, considerando que $X\sim Geo(p)$.
+A distribuição sem os dados citados tem uma distribuição reescalada na forma:
+#colocar imagem
 
 #Parâmetros da distribuição:
 Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amosra cresce, em outras palavras:
 $$ \lim_{n->\infty}\hat{\mu_{n}} \rightarrow \mu $$
-Usaremos essa premissa para encontrar os parâmetros da nossa distribuição geométrica.
-Sendo assim devemos conhecer a esperança da distribuição geométrica:
+Usaremos essa premissa para encontrar os parâmetros da nossa distribuição .
+Sendo assim devemos conhecer a esperança da distribuição geométrica,poisson e exponêncial:
 
-$$E(X\sim Geo(p)) = \frac{1}{p}$$ 
+$$E(X\sim Geo(p)) = \frac{1}{p}\\E(X\sim Exp(\lambda)) = \lambda\\E(X\sim Pois(\lambda)) = \lambda$$ 
 
+Realizando simulações com as premissas citadas obtemos os seguintes distribuições:
 
-Em seguida iremos realizar o teste de $\chi^2$ para avaliarmos se estamos cometendo o erro da escolha da nossa distruibuição 
+X - 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+----------------------------------
+Exponencial 
+----------------------------------
+Geométrica
+----------------------------------
+Poisson
+----------------------------------
 
-#Observações:
-Nosso processo de simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T simulada. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2 levando assim: $O_{2} = 0 $, retiramos também a oberservação 1 por dois motivos. 1º Ela distorce a distribuição que gostaríamos que fosse, 2º de fato $P(O_{1}) = p$, como o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$
-e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada. 
+Usando os resultados da tabela podemos calcular a $E(T) = \sum_{i=1}^{n}T_{i}*P(T=i) = xxxx \rightarrow p = \frac{1}{E(T)}$ para cada uma das distribuições:
+
+$$E(X\sim Geo(p)) = \frac{1}{p}\rightarrow \\E(X\sim Exp(\lambda)) = \lambda\\E(X\sim Pois(\lambda)) = \lambda$$
+
+A seguir o resultado de cada uma das distribuições com os parâmetros encontrados:
+
+#IMAGEM DAS DISTRIBUIÇÕES JUNTAS:
+
+A partir destas distribuições tomamos aquela que possui menor distância entre a distribuição simulada e as distribuições propostas.
+
+$$d_{(Geo,proposta)} = \\d_{(Exp,proposta)} =  \\d_{(Pois,proposta)} =$$
+
+Portanto a distribuição que será assumida é a Geométrica.
+
+Em seguida iremos realizar o teste de $\chi^2$ para avaliarmos se estamos cometendo o erro na escolha da distruibuição. 
 
 ##Teste de aderência:
-Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=)
+Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5%$ de tolerância de que nossa hipótese alternativa. para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=)
 
 
-$$\chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}}$$
-Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Poisson,Exponencial,Geometrica) $. K representa o número de repetições.
-
+$$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
+Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Poisson,Exponencial,Geometrica)$. K representa o número de repetições.
 
 
 ## Teste de aderência para T
-
 
 ## Distribuições para C
 Valores estimados e gráficos da distribuição. Como a quantidade de testes aumenta em $n$ vezes para a distribuiçao C, reduzimos a quantidade de matrizes geradas pela metade, e portanto usamos uma amostra de tamanho `r N/2` com $p = `r prob`$.
