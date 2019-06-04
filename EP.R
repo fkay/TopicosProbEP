@@ -35,7 +35,7 @@ plot(graph_from_adjacency_matrix(A, mode = 'undirected', weighted = TRUE))
 #lines(origin, col = "red", type = "b")
 
 
-#1/p = 0.834376863446631
+#p = 0.834376863446631
 
 n = 10
 N = 1000

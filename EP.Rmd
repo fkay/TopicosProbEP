@@ -89,7 +89,7 @@ testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE)
 ## Proposta de distribuição proposta para T
 Ao realizarmos os testes, percebemos que nossa distribuição aparenta ter caracteristicas e formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar qual distribuição é mais 'próxima' da nossa distribuição e quais são os melhores paramêtros da distribuição escolhida.
 
-#Premissas iniciais:
+# Premissas iniciais:
 Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, como o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$
 e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada.
 
@@ -100,25 +100,37 @@ A distribuição sem os dados citados tem uma distribuição reescalada na forma
 # Parâmetros da distribuição:
 Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amosra cresce, em outras palavras:
 $$ \lim_{n->\infty}\hat{\mu_{n}} \rightarrow \mu $$
-Usaremos essa premissa para encontrar os parâmetros da nossa distribuição .
+Usaremos estas premissa para encontrar os parâmetros da distribuição .
 Sendo assim devemos conhecer a esperança da distribuição geométrica,poisson e exponêncial:
 
-$$E(X\sim Geo(p)) = \frac{1}{p}\\E(X\sim Exp(\lambda)) = \lambda\\E(X\sim Pois(\lambda)) = \lambda$$ 
+$$\begin{aligned}
+E(X\sim Geo(p)) = \frac{1}{p} \\
+E(X\sim Exp(\lambda)) = \lambda \\
+E(X\sim Pois(\lambda)) = \lambda \\
+\end{aligned}$$ 
+A partir da simulação encontramos os parâmetros das distribuições como se segue:
+
+Geométrica | Exponêncial | Posisson
+------------- | ------------- | -------------
+   E(x) = 0.834  |   E(X) = 1.199    |   E(x) = 1.199 
+ 
+***
 
 Realizando simulações com as premissas citadas obtemos os seguintes distribuições:
 
-X - 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
-----------------------------------
-Exponencial 
-----------------------------------
-Geométrica
-----------------------------------
-Poisson
-----------------------------------
+X | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+--|---|---|---|---|---|---|---|----
+Exponêncial | | | | | | | | |
+--|---|---|---|---|---|---|---|----
+Geométrica | | | | | | | | |
+--|---|---|---|---|---|---|---|----
+Poisson | | | | | | | | |
+--|---|---|---|---|---|---|---|----
 
-Usando os resultados da tabela podemos calcular a $E(T) = \sum_{i=1}^{n}T_{i}*P(T=i) = xxxx \rightarrow p = \frac{1}{E(T)}$ para cada uma das distribuições:
 
-$$E(X\sim Geo(p)) = \frac{1}{p}\rightarrow \\E(X\sim Exp(\lambda)) = \lambda\\E(X\sim Pois(\lambda)) = \lambda$$
+Usando os resultados da tabela podemos calcular a $$E(T) = \sum_{i=1}^{n}T_{i}*P(T=i) = xxxx \rightarrow p = \frac{1}{E(T)}$$ para cada uma das distribuições:
+
+$$E(X\sim Geo(p)) = \frac{1}{p} \\E(X\sim Exp(\lambda)) = \lambda\\E(X\sim Pois(\lambda)) = \lambda$$
 
 A seguir o resultado de cada uma das distribuições com os parâmetros encontrados:
 
