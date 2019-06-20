@@ -51,11 +51,18 @@ for(i in 2:n)
   c = append(c, rep(i,dT[i]))
 lambd = mean(c)
 geo = 1/lambd
-plot(c(NA,NA,dTp), x = 1:n, col="blue", type = "b", xlab="Nº de Vertices", ylab="Probabilidade")
+plot(c(NA,NA,dTp), x = 1:n, col="blue", type = "p", xlab="Nº de Vertices", ylab="Probabilidade")
 lines(c(NA,NA,dTP), col = "darkgray", type = "b")
-curve(dexp(x-2, 0.834601), xlim=c(2,n), col = "orange", type = "b", add = T)
-curve(dpois(x, 1.209475), xlim=c(0,n-2), col = "black", type = "s", add = T)
-lines(dgeom(0:(n-2),geo), x = 1:(n-1), col = "green", type = "b")
+Exponencial = dexp(3:n, lambd)
+curve(Exponencial, xlim=c(3,n), col = "green", type = "b", add = T)
+
+curve(dexp(x-3, lambd), xlim=c(3,n), col = "purple", type = "b", add = T)
+lines(dpois(c(NA,NA,3:(n-1)), lambd ), col = "black", type = "b", add = T)
+lines(dgeom(0:(n-2),geo), x = 3:(n+1), col = "green", type = "l")
 grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
 
+#CALCULAR AS DISTRIBUICOES
+geometrica = dgeom(0:(n-2),geo)
+Exponencial = dexp(0:(n-2), lambd)
+pois = dpois(0:(n-2),lambd)
 

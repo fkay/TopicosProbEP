@@ -90,17 +90,26 @@ testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE)
 Ao realizarmos os testes, percebemos que nossa distribuição aparenta ter caracteristicas e formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar qual distribuição é mais 'próxima' da nossa distribuição e quais são os melhores paramêtros da distribuição escolhida.
 
 # Premissas iniciais:
-Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, como o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$
+Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, pois o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$
 e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada.
 
-A distribuição sem os dados citados tem uma distribuição reescalada na forma:
+***
+
+Caracteristicas da simulação:
+- Número de vértices: 10
+- Número de repetições: 1000
+- Probabilidade de conexão entre vértices: 0.4
+
+***
+
+A distribuição sem as observações citados tem uma distribuição reescalada na forma:
 
  ![](Distribuicao_reescaled.png)
 
 # Parâmetros da distribuição:
 Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amosra cresce, em outras palavras:
 $$ \lim_{n->\infty}\hat{\mu_{n}} \rightarrow \mu $$
-Usaremos estas premissa para encontrar os parâmetros da distribuição .
+Usaremos estas premissas para encontrar os parâmetros da distribuição .
 Sendo assim devemos conhecer a esperança da distribuição geométrica,poisson e exponêncial:
 
 $$\begin{aligned}
@@ -116,43 +125,57 @@ Geométrica | Exponêncial | Posisson
  
 ***
 
-Realizando simulações com as premissas citadas obtemos os seguintes distribuições:
 
-X | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
---|---|---|---|---|---|---|---|----
-Exponêncial | | | | | | | | |
---|---|---|---|---|---|---|---|----
-Geométrica | | | | | | | | |
---|---|---|---|---|---|---|---|----
-Poisson | | | | | | | | |
---|---|---|---|---|---|---|---|----
+Realizando simulações com as premissas citadas e com os parâmetros encontrados obtemos os seguintes distribuições:
 
+\begin{table}[h]
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{x}              & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} \\ \hline
+\textbf{Exponêncial}    & 1.2076     & 0.3610     & 0.1079     & 0.0326     & 0.0096     & 0.0029     & 0.0003     & 7.70e-05    \\ \hline
+\textbf{Geométrica}     & 0.8282     & 0.1423     & 0.0244     & 0.0042     & 0.0007     & 0.0001     & 2.13e-05   & 3.66e-06    \\ \hline
+\textbf{Poisson}        & 0.3610     & 0.2179     & 0.0877     & 0.0265     & 0.0064     & 0.00123    & 0.0002     & 3.35e-05    \\ \hline
+\textbf{Dist. Simulada} & 0.8273     & 0.1435     & 0.0247     & 0.0036     & 0.0009     & 0          & 0          & 0           \\ \hline
+\end{tabular}
+\end{table}
 
-Usando os resultados da tabela podemos calcular a $$E(T) = \sum_{i=1}^{n}T_{i}*P(T=i) = xxxx \rightarrow p = \frac{1}{E(T)}$$ para cada uma das distribuições:
-
-$$E(X\sim Geo(p)) = \frac{1}{p} \\E(X\sim Exp(\lambda)) = \lambda\\E(X\sim Pois(\lambda)) = \lambda$$
+Para chegar nos resultados da tabela acima foram utilizados o seguinte calcúlos:  $$E(T) = \sum_{i=1}^{n}T_{i}*P(T=i) \rightarrow p = \frac{1}{E(T)}$$ para cada uma das distribuições.
 
 A seguir o resultado de cada uma das distribuições com os parâmetros encontrados:
 
-#IMAGEM DAS DISTRIBUIÇÕES JUNTAS:
+![](dist_tog.png)
+
+Legenda:
+Pontos roxos: Distribuição Exponencial
+Pontos Azuis: Nossa distribuição Simulada 
+Pontos Verdes: Distribuição Geométrica 
+Pontos Pretos: Distribuição Poisson 
+
+
 
 A partir destas distribuições tomamos aquela que possui menor distância entre a distribuição simulada e as distribuições propostas.
 
-$$d_{(Geo,proposta)} = \\d_{(Exp,proposta)} =  \\d_{(Pois,proposta)} =$$
-
-Portanto a distribuição que será assumida é a Geométrica.
+Como pode ser visto na imagem acima a distribuição que será assumida será a Geométrica. Por se 'encaixar' melhor em nossa distribuição simulada.
 
 Em seguida iremos realizar o teste de $\chi^2$ para avaliarmos se estamos cometendo o erro na escolha da distruibuição. 
 
 ##Teste de aderência:
-Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5%$ de tolerância de que nossa hipótese alternativa. para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=)
+Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5%$ de tolerância. Para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=0.834).
 
 
 $$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
 Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Poisson,Exponencial,Geometrica)$. K representa o número de repetições.
 
-
 ## Teste de aderência para T
+
+![](dis_x2.jpg) 
+
+
+Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (12.59159,+\infty) \}$ 
+O valor de $\chi^2(s=(6)) =$. Sendo assim concluímos que
+
+Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
+
 
 ## Distribuições para C
 Valores estimados e gráficos da distribuição. Como a quantidade de testes aumenta em $n$ vezes para a distribuiçao C, reduzimos a quantidade de matrizes geradas pela metade, e portanto usamos uma amostra de tamanho `r N/2` com $p = `r prob`$.
