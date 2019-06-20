@@ -164,15 +164,17 @@ Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\al
 
 
 $$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
-Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Poisson,Exponencial,Geometrica)$. K representa o número de repetições.
+Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Geometrica)$. K representa o número de repetições.
 
 ## Teste de aderência para T
 
 ![](dis_x2.jpg) 
 
+Hipótese nula: Distribuição Geométrica com parâmetro p = 0.834 seja igual a distribuição T simulada.
+Hipótese alternativa:  Disttribuição Geométrica com parâmetro p = 0.834 seja Diferente a distribuição T simulada.
 
 Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (12.59159,+\infty) \}$ 
-O valor de $\chi^2(s=(6)) =$. Sendo assim concluímos que
+O valor de $\chi^2(s=(6)) = 0.2834055$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5%$
 
 Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
 

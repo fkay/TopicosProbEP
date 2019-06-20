@@ -62,7 +62,11 @@ lines(dgeom(0:(n-2),geo), x = 3:(n+1), col = "green", type = "l")
 grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
 
 #CALCULAR AS DISTRIBUICOES
-geometrica = dgeom(0:(n-2),geo)
+geometrica = dgeom(0:(n-3),geo)
 Exponencial = dexp(0:(n-2), lambd)
 pois = dpois(0:(n-2),lambd)
 
+qui_quadrado = 0
+for(i in 1:(n-3)) {
+  qui_quadrado = qui_quadrado + (geometrica[i]*N - dTp[i]*N)^2/(dT[i]*N)
+}
