@@ -174,9 +174,23 @@ Hipótese nula: Distribuição Geométrica com parâmetro p = 0.834 seja igual a
 Hipótese alternativa:  Disttribuição Geométrica com parâmetro p = 0.834 seja Diferente a distribuição T simulada.
 
 Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (12.59159,+\infty) \}$ 
-O valor de $\chi^2(s=(6)) = 0.2834055$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5%$
+O valor de $\chi^2(s=(6)) = 0.2834055$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5%$. Como nosso $\chi^2 \notin RC$ sendo assim não reijetamos a nossa hipótese nula.
 
 Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
+
+
+#Distribuição Reescalada e distribuição simulação
+Queremos agora, voltar para distribuição original a partir da distribuição reescalada. Veja abaixo ambas as distribuição:
+
+##IMAGEM DAS DUAS DISTRIBUICOES AQUI
+
+Legenda
+Azul: Distribuição da simulação reescalada
+Roxo: Distribuição da simulação original
+
+Foi necessario reescalar a distribuição e retirar dados pois a mesma iria interferir na comparação com uma distribuição já conhecida. Portanto
+
+
 
 
 ## Distribuições para C

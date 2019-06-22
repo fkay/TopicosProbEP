@@ -66,7 +66,7 @@ geometrica = dgeom(0:(n-3),geo)
 Exponencial = dexp(0:(n-2), lambd)
 pois = dpois(0:(n-2),lambd)
 
-qui_quadrado = 0
+
 for(i in 1:(n-3)) {
-  qui_quadrado = qui_quadrado + (geometrica[i]*N - dTp[i]*N)^2/(dT[i]*N)
+  qui_quadrado = qui_quadrado + (geometrica[i]*N - dTp[i]*N)^2/(geometrica[i]*N)
 }
