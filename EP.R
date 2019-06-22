@@ -51,8 +51,9 @@ for(i in 2:n)
   c = append(c, rep(i,dT[i]))
 lambd = mean(c)
 geo = 1/lambd
-plot(c(NA,NA,dTp), x = 1:n, col="blue", type = "p", xlab="Nº de Vertices", ylab="Probabilidade")
+plot(c(NA,NA,dTp), x = 1:n, col="white", type = "b", xlab="Nº de Vertices", ylab="Probabilidade")
 lines(c(NA,NA,dTP), col = "darkgray", type = "b")
+lines(c(0.4,0,dTp*sum(dTP),1-(sum(dTp*sum(dTP)) -0.4)), col = "green", type = "b")
 Exponencial = dexp(3:n, lambd)
 curve(Exponencial, xlim=c(3,n), col = "green", type = "b", add = T)
 

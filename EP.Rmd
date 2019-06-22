@@ -128,7 +128,7 @@ Geométrica | Exponêncial | Posisson
 
 Realizando simulações com as premissas citadas e com os parâmetros encontrados obtemos os seguintes distribuições:
 
-\begin{table}[h]
+\begin{table}[ht]
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
 \textbf{x}              & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} \\ \hline
@@ -179,19 +179,37 @@ O valor de $\chi^2(s=(6)) = 0.2834055$. Sendo assim concluímos que assumimos qu
 Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
 
 
-#Distribuição Reescalada e distribuição simulação
+##Distribuição Reescalada e distribuição simulação
 Queremos agora, voltar para distribuição original a partir da distribuição reescalada. Veja abaixo ambas as distribuição:
 
-##IMAGEM DAS DUAS DISTRIBUICOES AQUI
+![](Both_dist.png) 
 
 Legenda
 Azul: Distribuição da simulação reescalada
-Roxo: Distribuição da simulação original
+Cinza: Distribuição da simulação original
 
-Foi necessario reescalar a distribuição e retirar dados pois a mesma iria interferir na comparação com uma distribuição já conhecida. Portanto
+Foi necessario reescalar a distribuição e retirar dados pois a mesma iria interferir na comparação com uma distribuição já conhecida, que neste caso foi a geométrica. Portanto, temos que voltar a distribuição reescalada para distribuição original.
 
+```{r}
+#n = 10
+#dT = distT[3:n] ##Retiramos os nós 1 e 2 (Premissa)
+#dTp = dT / sum(dT) ##Distribuição reescalada (Azul)
+#dTP = dT / sum(distT) ##Distribuição Original considerando todos os nós.
+```
 
+Como queremos sair da distribuição Azul(reescalada) para a distribuição cinza(orginal), temos a seguinte equação:
 
+$$dTP[k] = \frac{dTp[k]\times \sum_{i=1}^{n}dT[i]}{\sum_{i=1}^{n}distT}, k=1,2,..,n$$
+
+Realizando esses passos podemos encontrar a distribuição reescala para a forma original:
+
+![](Both_origin.png) 
+
+Agora é possivel reeconstruir toda a distribuição da simulação,porque sabe-se que P(T=2)=0 e P(T=1) = p = 0.4 e que $P(T = ' \infty ') = 1 - P(T<=n)$, todas as informações foram citadas na seção de premissas.
+
+E finalmente temos nossa distribuição reconstruida completamente.
+
+![Distribuição completa com base na distribuição geométrica](LASTT.png)
 
 ## Distribuições para C
 Valores estimados e gráficos da distribuição. Como a quantidade de testes aumenta em $n$ vezes para a distribuiçao C, reduzimos a quantidade de matrizes geradas pela metade, e portanto usamos uma amostra de tamanho `r N/2` com $p = `r prob`$.
