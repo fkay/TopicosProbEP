@@ -283,3 +283,7 @@ Usando a mesma metodologia que na distribuição C, podemos reescalar a distribu
 ![](Both_DistC_R.png)
 
 E agora podemos reconstrui a nossa distribuição orginal, sabendo que a primeira observação ocorre com probabilidade p = 0.4 e $P(C= 11) = 1 - P(C <= 10)$
+![](LASTC.png)
+
+
+

@@ -97,7 +97,7 @@ diferenca1 = sum((geometrica-dTp)^2)
 diferenca2 = sum((exponencial-dTp)^2)
 chi2 = sum((geometrica-dTp)^2/geometrica) 
 
-lines(c(NA,geometrica*sum(dTP)), col = "green", type = "b")
+lines(c(0.4,geometrica*sum(dTP),1 - sum(geometrica*sum(dTP)) - 0.4), col = "green", type = "b")
   
 lines(c(NA,dTP), col = "darkgray", type = "b")
 lines(c(NA,dTp), col = "green", type = "b")
