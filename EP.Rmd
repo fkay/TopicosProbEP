@@ -160,7 +160,7 @@ Como pode ser visto na imagem acima a distribuição que será assumida será a 
 Em seguida iremos realizar o teste de $\chi^2$ para avaliarmos se estamos cometendo o erro na escolha da distruibuição. 
 
 ##Teste de aderência:
-Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5%$ de tolerância. Para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=0.834).
+Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5$% de tolerância. Para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=0.834).
 
 
 $$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
@@ -171,10 +171,10 @@ Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\ti
 ![](dis_x2.jpg) 
 
 Hipótese nula: Distribuição Geométrica com parâmetro p = 0.834 seja igual a distribuição T simulada.
-Hipótese alternativa:  Disttribuição Geométrica com parâmetro p = 0.834 seja Diferente a distribuição T simulada.
+Hipótese alternativa:  Distribuição Geométrica com parâmetro p = 0.834 seja Diferente a distribuição T simulada.
 
 Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (12.59159,+\infty) \}$ 
-O valor de $\chi^2(s=(6)) = 0.2834055$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5%$. Como nosso $\chi^2 \notin RC$ sendo assim não reijetamos a nossa hipótese nula.
+O valor de $\chi^2(s=(6)) = 0.2834055$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5$%. Como nosso $\chi^2 \notin RC$ sendo assim não reijetamos a nossa hipótese nula.
 
 Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
 
@@ -211,6 +211,8 @@ E finalmente temos nossa distribuição reconstruida completamente.
 
 ![Distribuição completa com base na distribuição geométrica](LASTT.png)
 
+
+
 ## Distribuições para C
 Valores estimados e gráficos da distribuição. Como a quantidade de testes aumenta em $n$ vezes para a distribuiçao C, reduzimos a quantidade de matrizes geradas pela metade, e portanto usamos uma amostra de tamanho `r N/2` com $p = `r prob`$.
 
@@ -218,4 +220,66 @@ Valores estimados e gráficos da distribuição. Como a quantidade de testes aum
 testeSamplesC(range = ns, sampleSz = N/2, p = prob, silent = TRUE)
 ```
 
+
+##Premissas
+De forma análoga a distribuição de T, retiramos desta vez apenas a observação 1, ou seja C(v,v') = 1, porque P(C=1) = p = 0.4.
+
+***
+
+Caracteristicas da simulação:
+- Número de vértices: 10
+- Número de repetições: 100
+- Probabilidade de conexão entre vértices: 0.4
+
+***
+
+##Distribuição para C
+Podemos seguir o mesmo raciocinio da distribuição T para inferirmos sobre a distribuição C. Portanto podemos diretamente calcular diretamente:
+$$E(X \sim Geo(p)) = \frac{1}{p}$$
+E verificar se essa distribuição se 'encaixa' em nossa distribuição simulada.
+Veja inicialmente, que a distribuição para C com as premissas citadas possui o seguinte gráfico:
+
+![](Dist_C_simulada.png)
+
+Realizando as simulações conseguimos encontrar o parâmetro p por meio da esperança 
+$$E(X \sim Geo(p)) = 1.351139 = \frac{1}{p} \rightarrow p = 0.7401166$$
+
+Assim podemos comparar a distribuição simulada com a distribuição geométrica com paramêtro p = 0.7401166 e a exponêncial com $\lambda= 1.351139$. Obtemos assim os seguintes gráficos:
+
+![](3_dist_C.png)
+
+Distribuição roxa: Exponêncial
+Distribuição verde: Distribuição Geométrica
+Distribuição Azul: Distribuição simulada
+
+Tomamos como hipótese de distribuição aquela que obteve a menor distância com a distribuição simulada, que neste caso foi a distribuição Geométrica.
+
 ## Teste de aderência para C
+Tendo como hipótese nossa dsitribuição geométrica podemos realizar o teste de aderência para verfiicar a adequabilidade da distribuição simulada com a distribuição geométrica.
+
+De modo análogo podemos calcular: $\chi^2$ com $\alpha = 5$% de tolerância. Para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=0.7401166).
+
+
+$$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
+Podemos definir nossas hipóteses para este modelo da seguinte forma:
+
+Hipótese nula: Distribuição Geométrica com parâmetro p = 0.7401166seja igual a distribuição C simulada.
+Hipótese alternativa:  Distribuição Geométrica com parâmetro p = 0.7401166 seja Diferente a distribuição C simulada.
+
+Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (14.06714,+\infty) \}$ 
+O valor de $\chi^2(s=(7)) = 0.04595813$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5$%. Como nosso $\chi^2 \notin RC$ sendo assim não reijetamos a nossa hipótese nula.
+
+##IMAGEM TESTE CHI2
+
+Notas: Consideramos 7 graus de liberdade pois havíamos retirado as observações 1 e 11 ($\infty$) sendo assim teríamos 8 elementos.
+
+##Distribuição reescalda e distribuição original:
+Queremos agora voltar a distribuição original da simulação, ou seja, sem retirar as observações 1 e 11 como haviamos feito anteriormente.Seguindo o mesmo raciocinio da distribuição T.Segue o gráfico das duas distribuições:
+
+![](Both_distC.png)
+
+Usando a mesma metodologia que na distribuição C, podemos reescalar a distribuição verde para a distribuição cinza (Simulada). Obtendo o seguinte resultado:
+
+![](Both_DistC_R.png)
+
+E agora podemos reconstrui a nossa distribuição orginal, sabendo que a primeira observação ocorre com probabilidade p = 0.4 e $P(C= 11) = 1 - P(C <= 10)$

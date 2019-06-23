@@ -67,7 +67,37 @@ geometrica = dgeom(0:(n-3),geo)
 Exponencial = dexp(0:(n-2), lambd)
 pois = dpois(0:(n-2),lambd)
 
+#DISTRIBUICAO PARA C
 
-for(i in 1:(n-3)) {
-  qui_quadrado = qui_quadrado + (geometrica[i]*N - dTp[i]*N)^2/(geometrica[i]*N)
-}
+n = 10
+N = 100
+p = 0.4
+
+d = testeSampleC(n, N, p)
+distC = d$distCAcum
+dT = distC[2:n]
+dTp = dT / sum(dT)
+dTP = dT / sum(distC)
+c = rep(1,dT[1])
+for(i in 2:n) 
+  c = append(c, rep(i,dT[i]))
+lambd = mean(c)
+geo = 1/lambd
+plot(c(NA,dTp), x = 1:n, col="white", type = "b", xlab="Nº de Vertices", ylab="Probabilidade C")
+lines(dgeom(0:(n-2),geo), x = 2:(n), col = "green", type = "l")
+curve(dexp(x-2, lambd), xlim=c(2,n), col = "purple", type = "b", add = T)
+lines(dpois(c(NA,2:(n-2)), lambd ), col = "black", type = "b", add = T)
+
+
+#DISTRIBUICOES C
+geometrica = dgeom(0:(n-2),geo)
+exponencial = dexp(0:(n-2), lambd)
+
+diferenca1 = sum((geometrica-dTp)^2)
+diferenca2 = sum((exponencial-dTp)^2)
+chi2 = sum((geometrica-dTp)^2/geometrica) 
+
+lines(c(NA,geometrica*sum(dTP)), col = "green", type = "b")
+  
+lines(c(NA,dTP), col = "darkgray", type = "b")
+lines(c(NA,dTp), col = "green", type = "b")
