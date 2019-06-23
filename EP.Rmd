@@ -96,10 +96,21 @@ printGraficos(d)
 ## Proposta de distribuição proposta para T
 Ao realizarmos os testes, percebemos que nossa distribuição aparenta ter caracteristicas e formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar qual distribuição é mais 'próxima' da nossa distribuição e quais são os melhores paramêtros da distribuição escolhida.
 
-### Premissas iniciais:
-Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, pois na forma como o grafo foi definido, sortemaos o caminho do loop para o mesmo nó com probabilidade $p$, e portanto fica bem definido que $P(O_{1}) = p$. Por fim e não menos importante, retiramos $O_{inf}$ porque ele "inviesa" <!-- procurar um termo melhor -->nossa distribuição esperada.
 
-A distribuição sem os dados citados tem uma distribuição reescalada na forma:
+# Premissas iniciais:
+Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, pois o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$
+e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada.
+
+***
+
+Caracteristicas da simulação:
+- Número de vértices: 10
+- Número de repetições: 1000
+- Probabilidade de conexão entre vértices: 0.4
+
+***
+
+A distribuição sem as observações citados tem uma distribuição reescalada na forma:
 
 ```{r isolate_dist, echo = FALSE}
 distT = d[[1]]$dadosAcum
@@ -119,51 +130,108 @@ grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), e
 ### Parâmetros da distribuição:
 Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amostra cresce, em outras palavras:
 $$ \lim_{n->\infty}\hat{\mu_{n}} \rightarrow \mu $$
-Usaremos essa premissa para encontrar os parâmetros da nossa distribuição .
-Sendo assim devemos conhecer a esperança da distribuição geométrica, poisson e exponêncial:
+
+Usaremos estas premissas para encontrar os parâmetros da distribuição .
+Sendo assim devemos conhecer a esperança da distribuição geométrica,poisson e exponêncial:
 
 $$\begin{aligned}
-E(X\sim Geo(p)) = \frac{1}{p}\\
-E(X\sim Exp(\lambda)) = \lambda\\
-E(X\sim Pois(\lambda)) = \lambda
+E(X\sim Geo(p)) = \frac{1}{p} \\
+E(X\sim Exp(\lambda)) = \lambda \\
+E(X\sim Pois(\lambda)) = \lambda \\
 \end{aligned}$$ 
+A partir da simulação encontramos os parâmetros das distribuições como se segue:
 
-Realizando simulações com as premissas citadas obtemos os seguintes distribuições:
+Geométrica | Exponêncial | Posisson
+------------- | ------------- | -------------
+   E(x) = 0.834  |   E(X) = 1.199    |   E(x) = 1.199 
+ 
+***
 
-X - 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
-----------------------------------
-Exponencial 
-----------------------------------
-Geométrica
-----------------------------------
-Poisson
-----------------------------------
 
-Usando os resultados da tabela podemos calcular a $E(T) = \sum_{i=1}^{n}T_{i}*P(T=i) = xxxx \rightarrow p = \frac{1}{E(T)}$ para cada uma das distribuições:
+Realizando simulações com as premissas citadas e com os parâmetros encontrados obtemos os seguintes distribuições:
 
-$$E(X\sim Geo(p)) = \frac{1}{p}\rightarrow \\E(X\sim Exp(\lambda)) = \lambda\\E(X\sim Pois(\lambda)) = \lambda$$
+\begin{table}[ht]
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{x}              & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} \\ \hline
+\textbf{Exponêncial}    & 1.2076     & 0.3610     & 0.1079     & 0.0326     & 0.0096     & 0.0029     & 0.0003     & 7.70e-05    \\ \hline
+\textbf{Geométrica}     & 0.8282     & 0.1423     & 0.0244     & 0.0042     & 0.0007     & 0.0001     & 2.13e-05   & 3.66e-06    \\ \hline
+\textbf{Poisson}        & 0.3610     & 0.2179     & 0.0877     & 0.0265     & 0.0064     & 0.00123    & 0.0002     & 3.35e-05    \\ \hline
+\textbf{Dist. Simulada} & 0.8273     & 0.1435     & 0.0247     & 0.0036     & 0.0009     & 0          & 0          & 0           \\ \hline
+\end{tabular}
+\end{table}
+
+Para chegar nos resultados da tabela acima foram utilizados o seguinte calcúlos:  $$E(T) = \sum_{i=1}^{n}T_{i}*P(T=i) \rightarrow p = \frac{1}{E(T)}$$ para cada uma das distribuições.
 
 A seguir o resultado de cada uma das distribuições com os parâmetros encontrados:
 
-#IMAGEM DAS DISTRIBUIÇÕES JUNTAS:
+![](dist_tog.png)
+
+Legenda:
+Pontos roxos: Distribuição Exponencial
+Pontos Azuis: Nossa distribuição Simulada 
+Pontos Verdes: Distribuição Geométrica 
+Pontos Pretos: Distribuição Poisson 
+
+
 
 A partir destas distribuições tomamos aquela que possui menor distância entre a distribuição simulada e as distribuições propostas.
 
-$$d_{(Geo,proposta)} = \\d_{(Exp,proposta)} =  \\d_{(Pois,proposta)} =$$
-
-Portanto a distribuição que será assumida é a Geométrica.
+Como pode ser visto na imagem acima a distribuição que será assumida será a Geométrica. Por se 'encaixar' melhor em nossa distribuição simulada.
 
 Em seguida iremos realizar o teste de $\chi^2$ para avaliarmos se estamos cometendo o erro na escolha da distruibuição. 
 
 ##Teste de aderência:
-Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5%$ de tolerância de que nossa hipótese alternativa. para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=)
+Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5%$ de tolerância. Para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=0.834).
 
 
 $$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
-Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Poisson,Exponencial,Geometrica)$. K representa o número de repetições.
-
+Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Geometrica)$. K representa o número de repetições.
 
 ## Teste de aderência para T
+
+![](dis_x2.jpg) 
+
+Hipótese nula: Distribuição Geométrica com parâmetro p = 0.834 seja igual a distribuição T simulada.
+Hipótese alternativa:  Disttribuição Geométrica com parâmetro p = 0.834 seja Diferente a distribuição T simulada.
+
+Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (12.59159,+\infty) \}$ 
+O valor de $\chi^2(s=(6)) = 0.2834055$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5%$. Como nosso $\chi^2 \notin RC$ sendo assim não reijetamos a nossa hipótese nula.
+
+Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
+
+
+##Distribuição Reescalada e distribuição simulação
+Queremos agora, voltar para distribuição original a partir da distribuição reescalada. Veja abaixo ambas as distribuição:
+
+![](Both_dist.png) 
+
+Legenda
+Azul: Distribuição da simulação reescalada
+Cinza: Distribuição da simulação original
+
+Foi necessario reescalar a distribuição e retirar dados pois a mesma iria interferir na comparação com uma distribuição já conhecida, que neste caso foi a geométrica. Portanto, temos que voltar a distribuição reescalada para distribuição original.
+
+```{r}
+#n = 10
+#dT = distT[3:n] ##Retiramos os nós 1 e 2 (Premissa)
+#dTp = dT / sum(dT) ##Distribuição reescalada (Azul)
+#dTP = dT / sum(distT) ##Distribuição Original considerando todos os nós.
+```
+
+Como queremos sair da distribuição Azul(reescalada) para a distribuição cinza(orginal), temos a seguinte equação:
+
+$$dTP[k] = \frac{dTp[k]\times \sum_{i=1}^{n}dT[i]}{\sum_{i=1}^{n}distT}, k=1,2,..,n$$
+
+Realizando esses passos podemos encontrar a distribuição reescala para a forma original:
+
+![](Both_origin.png) 
+
+Agora é possivel reeconstruir toda a distribuição da simulação,porque sabe-se que P(T=2)=0 e P(T=1) = p = 0.4 e que $P(T = ' \infty ') = 1 - P(T<=n)$, todas as informações foram citadas na seção de premissas.
+
+E finalmente temos nossa distribuição reconstruida completamente.
+
+![Distribuição completa com base na distribuição geométrica](LASTT.png)
 
 ## Distribuições para C
 Valores estimados e gráficos da distribuição. Como a quantidade de testes aumenta em $n$ vezes para a distribuiçao C, reduzimos a quantidade de matrizes geradas pela metade, e portanto usamos uma amostra de tamanho `r N/2` com $p = `r prob`$.
