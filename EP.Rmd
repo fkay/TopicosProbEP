@@ -11,14 +11,15 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+options(tinytex.verbose = TRUE)
 ```
 
-```{r load_lib, include=FALSE}
-source("EP_aux.R")
+```{r load_lib, include=FALSE, cache=FALSE}
+source("EP_aux.R", encoding = 'utf-8')
 library(igraph) 
 N = 200 # mudando o tipo de matriz aumentou a eficiencia
-ns = 8:9  # range de tamanho de matrizes para teste
+ns = 8:10  # range de tamanho de matrizes para teste
 prob = 0.4 # probabilidade de ligacao (gerar um aleatorio entre 0.25 e 0.75)
 ```
 
@@ -53,7 +54,7 @@ for(i in 1:n) {
 }
 ```
 
-Será gerado para cada tamanho de $n \in {6,7,8,9,10,11,12}$ uma amostra de $`r N`$ matrizes e feita uma contagem para cada valor de **T** encontrado. A distribuição é estimada tirando a média da contagem por $n * `r N`$. Assim:
+Será gerado para cada tamanho de $n \in \{6,7,8,9,10,11,12\}$ uma amostra de $`r N`$ matrizes e feita uma contagem para cada valor de **T** encontrado. A distribuição é estimada tirando a média da contagem por $n * `r N`$. Assim:
 
 $$\hat{P}(T=k) = \frac{1}{n*`r N`} \sum_{i=1}^{n*`r N`} \mathbbm{1}_{(T=k)}$$
 
@@ -62,14 +63,19 @@ Para a distribuição de *C* é usado processo similar mas como temos as combina
 $$\hat{P}(C=k) = \frac{1}{n^2 *`r N`} \sum_{i=1}^{n^2 *`r N`} \mathbbm{1}_{(C=k)}$$
 
 ## Tamanho da amostra
-Para determinar um tamanho bom de amostra para a aproximação da estimação, fixamos $n = 8$ e geramos a distribuição e o gráfico para alguns tamanhos de amostra ($N \in {25, 50, 75, 100, 150, 200, 250, ..., 750, 800}$). Depois calculamos a soma das diferenças ao quadrado entre os valores de cada distribuição e colocamos em um gráfico. No gráfico pode ser verificado se houve convergência e com que tamanho de amostra podemos considerar a convergência.
+Para determinar um tamanho bom de amostra para a aproximação da estimação, fixamos $n = 8$ e geramos a distribuição e o gráfico para alguns tamanhos de amostra ($N \in \{25, 50, 75, 100, 150, 200, 250, ..., 750, 800\}$). Depois calculamos a soma das diferenças ao quadrado entre os valores de cada distribuição e colocamos em um gráfico. No gráfico pode ser verificado se houve convergência e com que tamanho de amostra podemos considerar a convergência.
 $$erro = \sum_{i = 1}^{n+1} \big(P(T=k) - P'(T=k)\big)^2$$
 onde $P(T=k)$ é a probabilidade para o tamando de amostra atual e $P'(T=k)$ a probabilidade da amostra anterior.
 
-##Teste de aderência
+## Teste de aderência
+Após determinar um função de densidade de probabilidade que define a distribuição para os valore de $P(T=k)$ e $P(C=k)$, usaremos um teste de aderência para validar a hipótese. Testamos a $H_0$: população segue distribuição proposta contra a $H_1$: população tem outra distribuição. Para ta usaremos a seguinte estatística de teste:
+$$\chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}}$$
+Onde $O_{i}$ são as frequências observadas na simulação, $E_{i} = P(T=i) \times N$ a frequência esperada e $K$ representa a quantidade de pontos da distribuição. Assim $\chi^2$ tem uma distribuição chi-quadrada com $K-1$ graus de liberade.
+Com o teste calculado definimos a região critica como $RC = (c, \infty)$ onde $P(\chi^2_{s-1} > c) = \alpha$, sendo $\alpha$ o nível de significância para o nosso teste.
 
+Dessa forma após as simulações e escolhida uma distribuição provável que explique a frequencia observada, é feita a soma dos calculos das diferenças, e o resultado comparado com $c$. Se o valor calculado for maior que $c$ rejeitamos nossa hipótese $H_0$ com o nível de significância escolhido, e a distribuição selecionada não é aderente as observações. Mas se o valor calculado for menor que $c$ então não rejeitamos $H_0$ e podemos considerar que a variável aleatória $T$ tem a distribuição do modelo sugerido.
 
-#Simulação
+# Simulação
 ## Tamanho da amostra
 Gráfico para vários tamanhos de amostra com $p = `r prob`$:
 
@@ -83,27 +89,44 @@ Pelo gráfico podemos considerar uma amostra com tamanho `r N` razoável para as
 Valores estimados e gráficos da distribuição, usando `r N` amostras, e $p = `r prob`$
 
 ```{r gera_dist_T, echo = FALSE}
-testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE)
+d = testeSamplesT(range_n = ns, sampleSz = N, p = prob, silent = TRUE, nographs = TRUE)
+printGraficos(d)
 ```
 
 ## Proposta de distribuição proposta para T
 Ao realizarmos os testes, percebemos que nossa distribuição aparenta ter caracteristicas e formas de algumas distribuições conhecidas, sendo elas: Poisson, Exponencial e Geométrica. Neste caso vamos tentar identificar qual distribuição é mais 'próxima' da nossa distribuição e quais são os melhores paramêtros da distribuição escolhida.
 
-#Premissas iniciais:
-Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, como o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$
-e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada.
+### Premissas iniciais:
+Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, pois na forma como o grafo foi definido, sortemaos o caminho do loop para o mesmo nó com probabilidade $p$, e portanto fica bem definido que $P(O_{1}) = p$. Por fim e não menos importante, retiramos $O_{inf}$ porque ele "inviesa" <!-- procurar um termo melhor -->nossa distribuição esperada.
 
 A distribuição sem os dados citados tem uma distribuição reescalada na forma:
 
- ![](Distribuicao_reescaled.png)
+```{r isolate_dist, echo = FALSE}
+distT = d[[1]]$dadosAcum
+nd = d[[1]]$n
+dT = distT[3:nd]
+dTp = dT / sum(dT)
+dTP = dT / sum(distT)
+#lambd = sum(1:length(dT) * dT)/sum(dT) 
+#geo = 1/lambd
+plot(c(NA,NA,dTp), x = 1:nd, col="blue", type = "b", xlab="N de Vertices", ylab="Probabilidade")
+grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+```
 
-# Parâmetros da distribuição:
-Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amosra cresce, em outras palavras:
+
+<!-- ![](Distribuicao_reescaled.png) -->
+
+### Parâmetros da distribuição:
+Para encontrar os parametros das distribuição vamos usar as leis dos grandes números que diz que a média da amostra converge para a média da população quando o tamanho da amostra cresce, em outras palavras:
 $$ \lim_{n->\infty}\hat{\mu_{n}} \rightarrow \mu $$
 Usaremos essa premissa para encontrar os parâmetros da nossa distribuição .
-Sendo assim devemos conhecer a esperança da distribuição geométrica,poisson e exponêncial:
+Sendo assim devemos conhecer a esperança da distribuição geométrica, poisson e exponêncial:
 
-$$E(X\sim Geo(p)) = \frac{1}{p}\\E(X\sim Exp(\lambda)) = \lambda\\E(X\sim Pois(\lambda)) = \lambda$$ 
+$$\begin{aligned}
+E(X\sim Geo(p)) = \frac{1}{p}\\
+E(X\sim Exp(\lambda)) = \lambda\\
+E(X\sim Pois(\lambda)) = \lambda
+\end{aligned}$$ 
 
 Realizando simulações com as premissas citadas obtemos os seguintes distribuições:
 
@@ -146,7 +169,8 @@ Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\ti
 Valores estimados e gráficos da distribuição. Como a quantidade de testes aumenta em $n$ vezes para a distribuiçao C, reduzimos a quantidade de matrizes geradas pela metade, e portanto usamos uma amostra de tamanho `r N/2` com $p = `r prob`$.
 
 ```{r gera_dist_C, echo = FALSE}
-testeSamplesC(range = ns, sampleSz = N/2, p = prob, silent = TRUE)
+e = testeSamplesC(range = ns, sampleSz = N/2, p = prob, silent = TRUE, nographs = TRUE)
+printGraficos(e)
 ```
 
 ## Teste de aderência para C

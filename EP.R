@@ -1,5 +1,5 @@
 #source("C:/Users/Fabricio/OneDrive/IME-BMAC/7o Sem - 01_2019/MAE0699 - TOpicos de probabilidade/EP/EP_aux.R")
-source("EP_aux.R")
+source("EP_aux.R", encoding = 'utf-8')
 
 
 fw = fit_dist(10,1000,0.4,"pois")
@@ -18,6 +18,8 @@ for(i in 1:N) {
 
 
 testeSamplesT(8, 1000, 0.4)
+
+testeSamplesT(8:12, 100, 0.4, overlap = TRUE)
 
 testeSamplesC(8:9, 100, 0.4)
 
@@ -41,17 +43,17 @@ n = 10
 N = 1000
 p = 0.4
 
-d = testeSampleT(n, N, p)
-distT = d$distTAcum
+dd = testeSampleT(n, N, p)
+distT = dd$distTAcum
 dT = distT[3:n]
 dTp = dT / sum(dT)
 dTP = dT / sum(distT)
 c = rep(1,dT[1])
-for(i in 2:n) 
+for(i in 2:length(dT)) 
   c = append(c, rep(i,dT[i]))
 lambd = mean(c)
 geo = 1/lambd
-plot(c(NA,NA,dTp), x = 1:n, col="blue", type = "b", xlab="Nº de Vertices", ylab="Probabilidade")
+plot(c(NA,NA,dTp), x = 1:n, col="blue", type = "b", xlab="N? de Vertices", ylab="Probabilidade")
 lines(c(NA,NA,dTP), col = "darkgray", type = "b")
 curve(dexp(x-2, 0.834601), xlim=c(2,n), col = "orange", type = "b", add = T)
 curve(dpois(x, 1.209475), xlim=c(0,n-2), col = "black", type = "s", add = T)

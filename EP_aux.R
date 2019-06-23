@@ -73,12 +73,33 @@ testeSampleT <- function(n, sampleSz, p, silent = FALSE) {
 }
 
 # Testa a distribuição de T para vários tamanhos de grafo
-testeSamplesT <- function(range_n, sampleSz, p, silent = FALSE) {
-  for(n in range_n) {
-    d = testeSampleT(n, sampleSz, p, silent)
-    plot(d$distT, main = sprintf("n = %d", n), xlab = "T", ylab = "P(T)", type = "b", col="red")
-    grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+testeSamplesT <- function(range_n, sampleSz, p, silent = FALSE, nographs = FALSE) {
+  data = list()
+  for(i in seq_along(range_n)) {
+    d = testeSampleT(range_n[i], sampleSz, p, silent)
+    data[[i]] = list(n = range_n[i], dados = d$distT, dadosAcum = d$distTAcum)
+    if(!nographs){
+      plot(d$distT, main = sprintf("n = %d", range_n[i]), xlab = "T", 
+           ylab = "P(T)", type = "b", col='red')
+      grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+    }
   }
+  return(data)
+}
+
+printGraficos <- function(dados){
+  sz = length(dados)
+  colors = rainbow(sz)
+  plot(NA, main = "Dist. Amostras", xlab = "T", 
+       xlim = c(1,dados[[sz]]$n+1), ylim = c(0,0.6) ,
+       ylab = "P(T)")
+  for(i in 1:sz) {
+    lines(dados[[i]]$dados, col = colors[i], type = "b")
+  }
+  grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+  legend(x = "topright", col = colors, 
+         sapply(dados, function(a) {sprintf("n = %d",a$n)}),
+         fill = colors)
 }
 
 testeSampleC <- function(n, sampleSz, p, silent = FALSE) {
@@ -110,15 +131,20 @@ testeSampleC <- function(n, sampleSz, p, silent = FALSE) {
   return(list("distC" = distCP, "distCAcum" = distC))
 }
 
-testeSamplesC <- function(range_n, sampleSz, p, silent = FALSE) {
-  for(n in range_n) {
+testeSamplesC <- function(range_n, sampleSz, p, silent = FALSE, nographs = FALSE) {
+  data = list()
+  for(i in seq_along(range_n)) {
     if(silent == FALSE) {
       cat(sprintf("Checking for n = %d ", n))
     }
-    d = testeSampleC(n, sampleSz, p, silent)
-    plot(d$distC, main = sprintf("n = %d", n), xlab = "C", ylab = "P(C)", type = "b",  col="blue")
-    grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+    d = testeSampleC(range_n[i], sampleSz, p, silent)
+    data[[i]] = list(n = range_n[i], dados = d$distC, dadosAcum = d$distCAcum)
+    if(!nographs) {
+      plot(d$distC, main = sprintf("n = %d", range_n[i]), xlab = "C", ylab = "P(C)", type = "b",  col="blue")
+      grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+    }
   }
+  return(data)
 }
 
 testeAmostras <- function(n, samples, p, silent = FALSE) {
@@ -144,7 +170,7 @@ testeAmostras <- function(n, samples, p, silent = FALSE) {
   m = vals[,2:sSz] - vals[,1:(sSz-1)]
   m = m^2
   vals = colSums(m)
-  plot(names(vals), vals, main = sprintf("Convergencia dos erros para n = %d", n) , xlab = "Tamanho da Amostra", ylab = "Erro", type = "b",  col="green")
+  plot(names(vals), vals, main = sprintf("Convergência dos erros para n = %d", n) , xlab = "Tamanho da Amostra", ylab = "Erro", type = "b",  col="green")
   grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
   return(vals)
 }
