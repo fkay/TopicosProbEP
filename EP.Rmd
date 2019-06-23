@@ -269,7 +269,7 @@ Hipótese alternativa:  Distribuição Geométrica com parâmetro p = 0.7401166 
 Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (14.06714,+\infty) \}$ 
 O valor de $\chi^2(s=(7)) = 0.04595813$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5$%. Como nosso $\chi^2 \notin RC$ sendo assim não reijetamos a nossa hipótese nula.
 
-##IMAGEM TESTE CHI2
+![](dis_x2_c.png)
 
 Notas: Consideramos 7 graus de liberdade pois havíamos retirado as observações 1 e 11 ($\infty$) sendo assim teríamos 8 elementos.
 
