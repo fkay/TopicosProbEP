@@ -35,7 +35,7 @@ O modelo escolhido para o teste foi usando conexões não direcionadas e pregui�
 ## Estimação das distribuições
 Para o teste primeiro inicia-se uma matriz *A* representando com **TRUE** quando a ligação entre os vértices está presente e **FALSE** quando não há ligação. A linha *i* da matriz representa o vértice de saída e a coluna *j* representa o vértice de chegada. Como o modelo é preguiçoso pode existir **TRUE** na diagonal principal da matriz, e pelo fato das conexões não serem direcionadas a matriz é simétrica.
 
-Exemplo de matriz de conexões para 5 vértices com probabilidade de conexão 0.4:
+Exemplo de matriz de conexões para 7 vértices com probabilidade de conexão 0.4:
 ```{r matrix_example, echo=TRUE}
 n = 7
 A = generateMatrix(n, 0.4)
@@ -98,7 +98,7 @@ Ao realizarmos os testes, percebemos que nossa distribuição aparenta ter carac
 
 
 # Premissas iniciais:
-Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, pois o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$ e por fim e não menos importante, retiramos $T_{inf}$ porque ele inviesa nossa distribuição esperada.
+Nossa simulação é um processo discreto, além disso realizamos algumas mudanças em nossas distribuições de T. Primeiramente, retiramos a observação 2 de nosso processo, porque o problema definido não permite que o tempo minimo de volta seja 2, assim: $O_{2} = 0$.Retiramos, também, a observação 1 porque, de fato, $P(O_{1}) = p$, pois o problema é definido para podermos voltar ao mesmo nó com probabilidade $p$ , fica bem definido assim $P(O_{1}) = p$ e por fim e não menos importante, retiramos $T_{inf}$ por ser um ponto degenerado na nossa distribuição esperada.
 
 ***
 
@@ -110,7 +110,7 @@ Caracteristicas da simulação:
 
 ***
 
-A distribuição sem as observações citadas tem uma distribuição reescalada na forma:
+A distribuição sem as observações citadas tem uma distribuição reescalada na forma. A escala foi modificada na forma $P(T=k|k \in \{3,4,5,6,7,8,9,10\})$, ou seja condicionamos as probabilidades aos valores de interesse.
 
 ```{r isolate_dist, echo = FALSE}
 distT = d[[3]]$dadosAcum
@@ -120,7 +120,7 @@ dTp = dT / sum(dT)
 dTP = dT / sum(distT)
 #lambd = sum(1:length(dT) * dT)/sum(dT) 
 #geo = 1/lambd
-plot(c(NA,NA,dTp), x = 1:nd, col="blue", type = "b", xlab="Nº de Vertices", ylab="Probabilidade")
+plot(c(NA,NA,dTp), x = 1:nd, col="blue", type = "b", xlab="T", ylab="Probabilidade")
 grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
 ```
 
@@ -140,24 +140,38 @@ E(X\sim Exp(\lambda)) = \lambda \\
 E(X\sim Pois(\lambda)) = \lambda \\
 \end{aligned}$$ 
 A partir da simulação encontramos os parâmetros das distribuições como se segue:
+```{r estimated_pars_T, echo=FALSE}
+lambd = sum(1:length(dT) * dT)/sum(dT) 
+geo = 1/lambd
+
+```
+
 
 Geométrica | Exponêncial | Poisson
 ------------- | ------------- | -------------
-   E(x) = 0.834  |   E(X) = 1.199    |   E(x) = 1.199 
+   E(x) = `r round(geo,3)`  |   E(X) = `r round(lambd,3)`    |   E(x) = `r round(lambd,3)` 
  
 ***
 
 
 Realizando simulações com as premissas citadas e com os parâmetros encontrados obtemos os seguintes distribuições:
 
+```{r calc_dist_T, echo=FALSE}
+#CALCULAR AS DISTRIBUICOES
+geom = dgeom(0:(nd-3),geo)
+expo = dexp(0:(nd-2), lambd)
+pois = dpois(0:(nd-2),lambd)
+```
+
+
 \begin{table}[ht]
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
 \textbf{x}              & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} \\ \hline
-\textbf{Exponêncial}    & 1.2076     & 0.3610     & 0.1079     & 0.0326     & 0.0096     & 0.0029     & 0.0003     & 7.70e-05    \\ \hline
-\textbf{Geométrica}     & 0.8282     & 0.1423     & 0.0244     & 0.0042     & 0.0007     & 0.0001     & 2.13e-05   & 3.66e-06    \\ \hline
-\textbf{Poisson}        & 0.3610     & 0.2179     & 0.0877     & 0.0265     & 0.0064     & 0.00123    & 0.0002     & 3.35e-05    \\ \hline
-\textbf{Dist. Simulada} & 0.8273     & 0.1435     & 0.0247     & 0.0036     & 0.0009     & 0          & 0          & 0           \\ \hline
+\textbf{Exponencial}    & `r sprintf("%.4f",expo[1])`     & `r sprintf("%.4f",expo[2])`     & `r sprintf("%.4f",expo[3])`     & `r sprintf("%.4f",expo[4])`     & `r sprintf("%.4f",expo[5])`     & `r sprintf("%.4f",expo[6])`     & `r sprintf("%.2e",expo[7])`     & `r sprintf("%.2e",expo[8])`    \\ \hline
+\textbf{Geométrica}     & `r sprintf("%.4f",geom[1])`     & `r sprintf("%.4f",geom[2])`     & `r sprintf("%.4f",geom[3])`     & `r sprintf("%.4f",geom[4])`     & `r sprintf("%.4f",geom[5])`     & `r sprintf("%.4f",geom[6])`     & `r sprintf("%.2e",geom[7])`   & `r sprintf("%.4e",geom[8])`    \\ \hline
+\textbf{Poisson}        & `r sprintf("%.4f",pois[1])`     & `r sprintf("%.4f",pois[2])`     & `r sprintf("%.4f",pois[3])`     & `r sprintf("%.4f",pois[4])`     & `r sprintf("%.4f",pois[5])`     & `r sprintf("%.4f",pois[6])`     & `r sprintf("%.2e",pois[7])`   & `r sprintf("%.4e",pois[8])`    \\ \hline
+\textbf{Dist. Simulada} & `r sprintf("%.4f",dTp[1])`     & `r sprintf("%.4f",dTp[2])`     & `r sprintf("%.4f",dTp[3])`     & `r sprintf("%.4f",dTp[4])`     & `r sprintf("%.4f",dTp[5])`     & `r sprintf("%.4f",dTp[6])`          & `r sprintf("%.4f",dTp[7])`          & `r sprintf("%.4f",dTp[8])`           \\ \hline
 \end{tabular}
 \end{table}
 
@@ -166,9 +180,9 @@ Para chegar nos resultados da tabela acima foram utilizados o seguinte calcúlos
 A seguir o resultado de cada uma das distribuições com os parâmetros encontrados:
 
 ```{r with_dist, echo=FALSE}
-lambd = sum(1:length(dT) * dT)/sum(dT)
-geo = 1/lambd
-plot(c(NA,NA,dTp), x = 1:nd, col="blue", type = "b", xlab="Nº de Vertices", ylab="Probabilidade")
+#lambd = sum(1:length(dT) * dT)/sum(dT)
+#geo = 1/lambd
+plot(c(NA,NA,dTp), x = 1:nd, col="blue", type = "b", xlab="T", ylab="Probabilidade")
 curve(dexp(x-3, lambd), xlim=c(3,nd), col = "purple", type = "b", add=T)
 lines(dpois(c(NA,NA,3:(nd-1)), lambd ), col = "black", type = "b")
 lines(dgeom(0:(nd-2),geo), x = 3:(nd+1), col = "green", type = "l")
@@ -191,36 +205,16 @@ Pontos Pretos: Distribuição Poisson -->
 
 A partir destas distribuições tomamos aquela que possui menor distância entre a distribuição simulada e as distribuições propostas.
 
-Como pode ser visto na imagem acima a distribuição que será assumida será a Geométrica. Por se 'encaixar' melhor em nossa distribuição simulada.
+Como pode ser visto na imagem acima a distribuição que será assumida será a Geométrica, pois é a que se aproxima mais da nossa distribuição simulada.
 
 Em seguida iremos realizar o teste de $\chi^2$ para avaliarmos se estamos cometendo o erro na escolha da distruibuição. 
 
-## Teste de aderência:
-Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5$% de tolerância. Para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro ($p=`r geo`$).
-
-
-$$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
-Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Geometrica)$. K representa o número de repetições.
-
-## Teste de aderência para T
-
-![](dis_x2.jpg) 
-
-**Hipótese nula:** Distribuição Geométrica com parâmetro $p=`r geo`$ seja igual a distribuição T simulada.
-**Hipótese alternativa:**  Distribuição Geométrica com parâmetro $p=`r geo`$ seja Diferente a distribuição T simulada.
-
-Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (12.59159,+\infty) \}$ 
-O valor de $\chi^2(s=(6)) = 0.2834055$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5$%. Como nosso $\chi^2 \notin RC$ sendo assim não reijetamos a nossa hipótese nula.
-
-Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
-
-
-## Distribuição Reescalada e distribuição simulação
+## Distribuição reescalada e distribuição proposta
 Queremos agora, voltar para distribuição original a partir da distribuição reescalada. Veja abaixo ambas as distribuição:
 
 ```{r dist_scaled_and_normal, echo=FALSE}
 
-plot(c(NA,NA,dTp), x = 1:nd, col="blue", type = "b", xlab="Nº de Vertices", ylab="Probabilidade")
+plot(c(NA,NA,dTp), x = 1:nd, col="blue", type = "b", xlab="T", ylab="Probabilidade")
 lines(c(NA,NA,dTP), col = "darkgray", type = "b")
 grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
 legend(x = "topright", col = c("blue", "darkgray"), 
@@ -238,16 +232,19 @@ Foi necessario reescalar a distribuição e retirar dados pois a mesma iria inte
 
 ```{r}
 #n = 10
-#dT = distT[3:n] ##Retiramos os nós 1 e 2 (Premissa)
+#dT = distT[3:n] ##Retiramos os nós 1, 2 e inf (Premissa)
 #dTp = dT / sum(dT) ##Distribuição reescalada (Azul)
-#dTP = dT / sum(distT) ##Distribuição Original considerando todos os nós.
+#dTP = dT / sum(distT) ##Distribuição Original considerando todos os valores.
 ```
 
-Como queremos sair da distribuição Azul(reescalada) para a distribuição cinza(orginal), temos a seguinte equação:
+Como queremos sair da distribuição Azul(reescalada) para a distribuição cinza(orginal), devemos multiplicar por um fator $(1-p-T_{\infty})$:
+
+<!-- 
 
 $$dTP[k] = \frac{dTp[k]\times \sum_{i=1}^{n}dT[i]}{\sum_{i=1}^{n}distT}, k=1,2,..,n$$
+-->
 
-Realizando esses passos podemos encontrar a distribuição reescala para a forma original:
+Realizando esses passos podemos encontrar a distribuição reescalada para a forma original:
 
 <!-- ![](Both_origin.png) --> 
 
@@ -255,8 +252,8 @@ Agora é possivel reeconstruir toda a distribuição da simulação,porque sabe-
 
 E finalmente temos nossa distribuição reconstruida completamente.
 
-```{r dist_completa_T, echo=FALSE}
-plot(c(prob,0,dTP,1-sum(dTP)- prob), x = 1:(nd+1), col="green", type = "b", xlab="Nº de Vertices", ylab="Probabilidade")
+```{r dist_completa_T, echo=FALSE, fig.cap="Distribuição completa com base na distribuição geométrica"}
+plot(c(prob,0,dTP,1-sum(dTP)-prob), x = 1:(nd+1), col="green", type = "b", xlab="T", ylab="Probabilidade")
 lines(c(NA,NA,dTP,NA), col = "darkgray", type = "b")
 grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
 
@@ -265,6 +262,60 @@ grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), e
 
 <!-- ![Distribuição completa com base na distribuição geométrica](LASTT.png) -->
 
+A distribuição proposta é:
+$$
+T \sim \left\{ 
+              \begin{array}{ll} 
+                P(T=1) = p\\
+                P(T=2) = 0\\
+                P(T=k) \sim Geo(g) * (1 - p - T_{\infty}), \text{usando valor k-3 para } k \in \{3,4,..,n\}\\
+                P(T=\infty) = 1 - p - \sum_{i=3}^{n}P(T=i)
+              \end{array}
+        \right.
+$$
+Sendo $g = 1 / E[T-2]$ para $T \in \{3,4,5,...,n\}$, ou seja, é a média da amostra observada do ponto 3 em diante, porém deslocados em duas unidades.
+\newpage
+
+## Teste de aderência:
+Com nossa função proposta em mãos, podemos realizar o teste $\chi^2$ com $\alpha = 5$% de tolerância. Para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro ($p=`r geo`$).
+
+
+$$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
+Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\times N$ com $T\sim (Geometrica)$. K representa o número de repetições.
+
+## Teste de aderência para T
+
+![](dis_x2.jpg) 
+
+**Hipótese nula:** Distribuição proposta seja igual a distribuição T simulada.
+
+**Hipótese alternativa:**  Distribuição proposta seja diferente da distribuição T simulada.
+
+Nossa região critica para $\alpha = 5\%$ é $RC=\{x:\mathbb{R}, (`r qchisq(0.95, 10)`,+\infty) \}$ 
+
+```{r teste_adere_T, echo=FALSE, fig.cap="Proposta x Simulada"} 
+# proposta
+Tinf = distT[11]/sum(distT)
+geo_prop = dgeom(0:(nd-3),geo)*(1-prob-Tinf)
+prop = c(prob,0,geo_prop,1-prob-sum(geo_prop))
+obs = distT/sum(distT)
+
+# plota a simulada
+plot(obs, x = 1:(nd+1), col="green", type = "b", xlab="T", ylab="Probabilidade")
+# plota a proposta
+lines(prop, col = "blue", type = "b")
+grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+legend(x = "topright", col = c("green", "blue"), 
+         legend = c("Dist. simulada", "Dist. proposta"),
+         fill = c("green", "blue"))
+
+chi2 = sum((obs-prop)^2 / prop, na.rm=TRUE)
+```
+
+
+O valor de $\chi^2(s=(10)) = `r chi2`$. Sendo assim assumimos que nossa distribuição proposta tem boa aderência com significância de $\alpha = 5\%$. Como nosso $\chi^2 \notin RC$ sendo assim não rejeitamos a nossa hipótese nula.
+
+Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
 
 
 ## Distribuições para C
@@ -283,13 +334,13 @@ De forma análoga a distribuição de T, retiramos desta vez apenas a observaç�
 
 Caracteristicas da simulação:
 
-* Número de vértices: 10
-* Número de repetições: 100
-* Probabilidade de conexão entre vértices: 0.4
+* Número de vértices: `r e[[3]]$n`
+* Número de repetições: `r N/2`
+* Probabilidade de conexão entre vértices: `r prob`
 
 ***
 
-##Distribuição para C
+## Distribuição para C
 Podemos seguir o mesmo raciocinio da distribuição T para inferirmos sobre a distribuição C. Portanto podemos calcular diretamente:
 $$E(X \sim Geo(p)) = \frac{1}{p}$$
 E verificar se essa distribuição se 'encaixa' em nossa distribuição simulada.
