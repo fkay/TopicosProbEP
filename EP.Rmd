@@ -18,8 +18,8 @@ options(tinytex.verbose = TRUE)
 ```{r load_lib, include=FALSE, cache=FALSE}
 source("EP_aux.R", encoding = 'utf-8')
 library(igraph) 
-N = 200 # mudando o tipo de matriz aumentou a eficiencia
-ns = 8:10  # range de tamanho de matrizes para teste
+N = 300 # mudando o tipo de matriz aumentou a eficiencia
+ns = 6:12  # range de tamanho de matrizes para teste
 prob = 0.4 # probabilidade de ligacao (gerar um aleatorio entre 0.25 e 0.75)
 ```
 
@@ -104,17 +104,17 @@ Nossa simulação é um processo discreto, além disso realizamos algumas mudan�
 
 Caracteristicas da simulação:
 
-* Número de vértices: 10
-* Número de repetições: 1000
-* Probabilidade de conexão entre vértices: 0.4
+* Número de vértices: `r d[[5]]$n`
+* Número de repetições: `r N`
+* Probabilidade de conexão entre vértices: `r prob`
 
 ***
 
 A distribuição sem as observações citadas tem uma distribuição reescalada na forma. A escala foi modificada na forma $P(T=k|k \in \{3,4,5,6,7,8,9,10\})$, ou seja condicionamos as probabilidades aos valores de interesse.
 
 ```{r isolate_dist, echo = FALSE}
-distT = d[[3]]$dadosAcum
-nd = d[[3]]$n
+distT = d[[5]]$dadosAcum
+nd = d[[5]]$n
 dT = distT[3:nd]
 dTp = dT / sum(dT)
 dTP = dT / sum(distT)
@@ -187,9 +187,9 @@ curve(dexp(x-3, lambd), xlim=c(3,nd), col = "purple", type = "b", add=T)
 lines(dpois(c(NA,NA,3:(nd-1)), lambd ), col = "black", type = "b")
 lines(dgeom(0:(nd-2),geo), x = 3:(nd+1), col = "green", type = "l")
 grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
-legend(x = "topright", col = c("blue", "purple", "black", "green"), 
+legend(x = "topright", col = c("blue", "purple", "green","black"), 
          legend = c("Simulado", "Dist. Exponencial", "Dist. Geométrica", "Dist. Poisson"),
-         fill = c("blue", "purple", "black", "green"))
+         fill = c("blue", "purple", "green", "black"))
 ```
 
 
@@ -291,7 +291,7 @@ Onde $O_{i}$ são as frequências observadas na simulação e $E_{i} = P(T=i)\ti
 
 **Hipótese alternativa:**  Distribuição proposta seja diferente da distribuição T simulada.
 
-Nossa região critica para $\alpha = 5\%$ é $RC=\{x:\mathbb{R}, (`r qchisq(0.95, 10)`,+\infty) \}$ 
+Nossa região critica para $\alpha = 5\%$ é $RC=\{x:\mathbb{R}, (`r qchisq(0.95, 9)`,+\infty) \}$ 
 
 ```{r teste_adere_T, echo=FALSE, fig.cap="Proposta x Simulada"} 
 # proposta
@@ -313,9 +313,9 @@ chi2 = sum((obs-prop)^2 / prop, na.rm=TRUE)
 ```
 
 
-O valor de $\chi^2(s=(10)) = `r chi2`$. Sendo assim assumimos que nossa distribuição proposta tem boa aderência com significância de $\alpha = 5\%$. Como nosso $\chi^2 \notin RC$ sendo assim não rejeitamos a nossa hipótese nula.
+O valor de $\chi^2(s=(9)) = `r chi2`$. Sendo assim assumimos que nossa distribuição proposta tem boa aderência com significância de $\alpha = 5\%$. Como nosso $\chi^2 \notin RC$ sendo assim não rejeitamos a nossa hipótese nula.
 
-Notas: Consideramos 6 graus de liberdade pois havíamos retirado as observações 1,2 e 11 sendo assim teríamos 7 elementos.
+Notas: Consideramos 9 graus de liberdade pois retiramos $T=2$
 
 
 ## Distribuições para C
@@ -328,13 +328,13 @@ printGraficos(e)
 
 
 ## Premissas
-De forma análoga a distribuição de T, retiramos desta vez apenas a observação 1, ou seja $C(v,v') = 1$, porque $P(C=1) = p = `r prob`$.
+De forma análoga a distribuição de T, retiramos desta vez apenas a observação 1, ou seja $C(v,v') = 1$, porque $P(C=1) = p = `r prob`$ e a observação 11 ($C_{\infty}$).
 
 ***
 
 Caracteristicas da simulação:
 
-* Número de vértices: `r e[[3]]$n`
+* Número de vértices: `r e[[5]]$n`
 * Número de repetições: `r N/2`
 * Probabilidade de conexão entre vértices: `r prob`
 
@@ -343,54 +343,128 @@ Caracteristicas da simulação:
 ## Distribuição para C
 Podemos seguir o mesmo raciocinio da distribuição T para inferirmos sobre a distribuição C. Portanto podemos calcular diretamente:
 $$E(X \sim Geo(p)) = \frac{1}{p}$$
-E verificar se essa distribuição se 'encaixa' em nossa distribuição simulada.
+E verificar se essa distribuição se aproxima da nossa distribuição simulada.
 Veja inicialmente, que a distribuição para C com as premissas citadas possui o seguinte gráfico:
 
-![](Dist_C_simulada.png)
+```{r simula_C, echo=FALSE}
+distC = e[[5]]$dadosAcum
+nc = e[[5]]$n
+dC = distC[2:nc]
+dCp = dC / sum(dC)
+dCP = dC / sum(distC)
+plot(c(NA,dCp), x = 1:nc, col="blue", type = "b", xlab="C", ylab="Probabilidade")
+grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+```
+
+
+<!-- ![](Dist_C_simulada.png) -->
+
+```{r estimated_pars_C, echo=FALSE}
+lambdC = sum(1:length(dC) * dC)/sum(dC) 
+geoC = 1/lambdC
+```
+
 
 Realizando as simulações conseguimos encontrar o parâmetro p por meio da esperança 
-$$E(X \sim Geo(p)) = 1.351139 = \frac{1}{p} \rightarrow p = 0.7401166$$
+$$E(X \sim Geo(p)) = `r lambdC` = \frac{1}{p} \rightarrow p = `r geoC`$$
 
-Assim podemos comparar a distribuição simulada com a distribuição geométrica com paramêtro p = 0.7401166 e a exponêncial com $\lambda= 1.351139$. Obtemos assim os seguintes gráficos:
+Assim podemos comparar a distribuição simulada com a distribuição geométrica com paramêtro $p = `r geoC`$ e a exponêncial com $\lambda= `r lambdC`$. Obtemos assim os seguintes gráficos:
 
-![](3_dist_C.png)
+```{r with_dist_C, echo=FALSE}
+plot(c(NA,dCp), x = 1:nc, col="blue", ylim=c(0,0.8), type = "b", xlab="C", ylab="Probabilidade")
+curve(dexp(x-2, lambdC), xlim=c(2,nc), col = "purple", type = "b", add=T)
+lines(dgeom(0:(nc-2),geoC), x = 2:nc, col = "green", type = "b")
+grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+legend(x = "topright", col = c("blue", "purple", "green"), 
+         legend = c("Simulado", "Dist. Exponencial", "Dist. Geométrica"),
+         fill = c("blue", "purple", "green"))
+```
+
+<!-- ![](3_dist_C.png)
 
 Distribuição roxa: Exponêncial
 Distribuição verde: Distribuição Geométrica
-Distribuição Azul: Distribuição simulada
+Distribuição Azul: Distribuição simulada -->
 
 Tomamos como hipótese de distribuição aquela que obteve a menor distância com a distribuição simulada, que neste caso foi a distribuição Geométrica.
 
-## Teste de aderência para C
-Tendo como hipótese nossa dsitribuição geométrica podemos realizar o teste de aderência para verfiicar a adequabilidade da distribuição simulada com a distribuição geométrica.
+## Distribuição reescalada e distribuição proposta:
+Queremos agora voltar a distribuição original da simulação, ou seja, sem retirar as observações 1 e 11 como haviamos feito anteriormente.Seguindo o mesmo raciocinio da distribuição T.
 
-De modo análogo podemos calcular: $\chi^2$ com $\alpha = 5$% de tolerância. Para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição Geométrica com parâmetro(p=0.7401166).
+<!-- ![](Both_distC.png) -->
+
+Usando a mesma metodologia que na distribuição C, podemos reescalar a distribuição geométrica para ficar compatível com a simulada. É possivel reeconstruir toda a distribuição da simulação,porque sabe-se que $P(C=1) = p = `r prob`$ e que $P(C = \infty) = 1 - P(C<=n)$
+
+E finalmente temos nossa distribuição reconstruida completamente.
+
+```{r dist_completa_C, echo=FALSE, fig.cap="Distribuição completa com base na distribuição geométrica"}
+plot(c(prob,dCP,1-sum(dCP)-prob), x = 1:(nd+1), col="green", type = "b", xlab="C", ylab="Probabilidade")
+lines(c(NA,dCP,NA), col = "darkgray", type = "b")
+grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+
+```
+
+
+
+A distribuição proposta é:
+$$
+C \sim \left\{ 
+              \begin{array}{ll} 
+                P(C=1) = p\\
+                P(C=k) \sim Geo(g) * (1 - p - C_{\infty}), \text{usando valor k-2 para } k \in \{2,4,..,n\}\\
+                P(C=\infty) = 1 - p - \sum_{i=2}^{n}P(C=i)
+              \end{array}
+        \right.
+$$
+Sendo $g = 1 / E[C-1]$ para $C \in \{2,4,5,...,n\}$, ou seja, é a média da amostra observada do ponto 2 em diante, porém deslocados em uma unidade.
+
+<!-- ![](Both_DistC_R.png)
+
+E agora podemos reconstrui a nossa distribuição orginal, sabendo que a primeira observação ocorre com probabilidade p = 0.4 e $P(C= 11) = 1 - P(C <= 10)$
+![](LASTC.png) -->
+
+
+## Teste de aderência para C
+
+Tendo como hipótese nossa dsitribuição geométrica podemos realizar o teste de aderência para verificar a adequabilidade da distribuição simulada com a distribuição proposta.
+
+De modo análogo podemos calcular: $\chi^2$ com $\alpha = 5$% de significância, para avaliarmos se estamos ou não comentendo o erro de escolher a distribuição proposta.
 
 
 $$ \chi^2 = \sum_{i=1}^{K}\frac{(O_{i} - E_{i})^2}{E_{i}} $$
 Podemos definir nossas hipóteses para este modelo da seguinte forma:
 
-Hipótese nula: Distribuição Geométrica com parâmetro p = 0.7401166seja igual a distribuição C simulada.
-Hipótese alternativa:  Distribuição Geométrica com parâmetro p = 0.7401166 seja Diferente a distribuição C simulada.
+**Hipótese nula:** Distribuição proposta seja igual a distribuição C simulada.
 
-Nossa região critica para $\alpha = 5%$ é $RC=\{x:\mathbb{R}, (14.06714,+\infty) \}$ 
-O valor de $\chi^2(s=(7)) = 0.04595813$. Sendo assim concluímos que assumimos que nossa distribuição geométrica tem boa aderência com erro de $\alpha = 5$%. Como nosso $\chi^2 \notin RC$ sendo assim não reijetamos a nossa hipótese nula.
+**Hipótese alternativa:**  Distribuição proposta seja diferente da distribuição C simulada.
+Nossa região critica para $\alpha = 5\%$ é $RC=\{x:\mathbb{R}, (`r qchisq(0.95, 10)`,+\infty) \}$
+
+```{r teste_adere_C, echo=FALSE, fig.cap="Proposta x Simulada"} 
+# proposta
+Cinf = distC[11]/sum(distC)
+geo_propC = dgeom(0:(nc-2),geoC)*(1-prob-Cinf)
+propC = c(prob,geo_propC,1-prob-sum(geo_propC))
+obsC = distC/sum(distC)
+
+# plota a simulada
+plot(obsC, x = 1:(nc+1), ylim=c(0,0.45), col="green", type = "b", xlab="C", ylab="Probabilidade")
+# plota a proposta
+lines(propC, col = "blue", type = "b")
+grid(nx = NULL, ny = NULL, col = "darkgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE)
+legend(x = "topright", col = c("green", "blue"), 
+         legend = c("Dist. simulada", "Dist. proposta"),
+         fill = c("green", "blue"))
+
+chi2C = sum((obsC-propC)^2 / propC, na.rm=TRUE)
+```
+
+
+O valor de $\chi^2(s=(10)) = `r chi2C`$. Sendo assim assumimos que nossa distribuição proposta tem boa aderência com significância de $\alpha = 5\%$. Como nosso $\chi^2 \notin RC$ sendo assim não rejeitamos a nossa hipótese nula.
+
 
 ![](dis_x2_c.png)
 
-Notas: Consideramos 7 graus de liberdade pois havíamos retirado as observações 1 e 11 ($\infty$) sendo assim teríamos 8 elementos.
-
-## Distribuição reescalda e distribuição original:
-Queremos agora voltar a distribuição original da simulação, ou seja, sem retirar as observações 1 e 11 como haviamos feito anteriormente.Seguindo o mesmo raciocinio da distribuição T.Segue o gráfico das duas distribuições:
-
-![](Both_distC.png)
-
-Usando a mesma metodologia que na distribuição C, podemos reescalar a distribuição verde para a distribuição cinza (Simulada). Obtendo o seguinte resultado:
-
-![](Both_DistC_R.png)
-
-E agora podemos reconstrui a nossa distribuição orginal, sabendo que a primeira observação ocorre com probabilidade p = 0.4 e $P(C= 11) = 1 - P(C <= 10)$
-![](LASTC.png)
+Notas: Consideramos 10 graus de liberdade pois temos 9 elementos comparados.
 
 
 
